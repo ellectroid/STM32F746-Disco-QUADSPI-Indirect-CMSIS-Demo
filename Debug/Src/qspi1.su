@@ -1,0 +1,6 @@
+core_cm7.h:2464:22:SCB_InvalidateDCache_by_Addr	32	static,ignoring_inline_asm
+qspi1.c:9:6:qspi_setup_indirect	4	static
+qspi1.c:49:6:qspi_write_enable	16	static
+qspi1.c:66:6:QSPI_read_byte	16	static
+qspi1.c:91:6:QSPI_write_byte	16	static
+qspi1.c:114:6:QSPI_fast_read	32	static

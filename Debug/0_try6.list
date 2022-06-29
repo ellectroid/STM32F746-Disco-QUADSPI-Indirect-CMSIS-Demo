@@ -1,0 +1,3022 @@
+
+0_try6.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .isr_vector   000001c8  08000000  08000000  00010000  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  1 .text         0000134c  080001c8  080001c8  000101c8  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .rodata       000000c4  08001514  08001514  00011514  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 .ARM.extab    00000000  080015d8  080015d8  000115e0  2**0
+                  CONTENTS
+  4 .ARM          00000000  080015d8  080015d8  000115e0  2**0
+                  CONTENTS
+  5 .preinit_array 00000000  080015d8  080015e0  000115e0  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  6 .init_array   00000004  080015d8  080015d8  000115d8  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  7 .fini_array   00000004  080015dc  080015dc  000115dc  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  8 .data         00000000  20000000  20000000  000115e0  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  9 .bss          00000020  20000000  080015e0  00020000  2**2
+                  ALLOC
+ 10 ._user_heap_stack 00000600  20000020  080015e0  00020020  2**0
+                  ALLOC
+ 11 .ARM.attributes 00000030  00000000  00000000  000115e0  2**0
+                  CONTENTS, READONLY
+ 12 .debug_info   000025e6  00000000  00000000  00011610  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 13 .debug_abbrev 00000ae8  00000000  00000000  00013bf6  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 14 .debug_aranges 000002c0  00000000  00000000  000146e0  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 15 .debug_ranges 00000228  00000000  00000000  000149a0  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 16 .debug_macro  0001bf39  00000000  00000000  00014bc8  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 17 .debug_line   000030b8  00000000  00000000  00030b01  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 18 .debug_str    0009c614  00000000  00000000  00033bb9  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 19 .comment      00000053  00000000  00000000  000d01cd  2**0
+                  CONTENTS, READONLY
+ 20 .debug_frame  0000086c  00000000  00000000  000d0220  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+
+Disassembly of section .text:
+
+080001c8 <__do_global_dtors_aux>:
+ 80001c8:	b510      	push	{r4, lr}
+ 80001ca:	4c05      	ldr	r4, [pc, #20]	; (80001e0 <__do_global_dtors_aux+0x18>)
+ 80001cc:	7823      	ldrb	r3, [r4, #0]
+ 80001ce:	b933      	cbnz	r3, 80001de <__do_global_dtors_aux+0x16>
+ 80001d0:	4b04      	ldr	r3, [pc, #16]	; (80001e4 <__do_global_dtors_aux+0x1c>)
+ 80001d2:	b113      	cbz	r3, 80001da <__do_global_dtors_aux+0x12>
+ 80001d4:	4804      	ldr	r0, [pc, #16]	; (80001e8 <__do_global_dtors_aux+0x20>)
+ 80001d6:	f3af 8000 	nop.w
+ 80001da:	2301      	movs	r3, #1
+ 80001dc:	7023      	strb	r3, [r4, #0]
+ 80001de:	bd10      	pop	{r4, pc}
+ 80001e0:	20000000 	.word	0x20000000
+ 80001e4:	00000000 	.word	0x00000000
+ 80001e8:	080014fc 	.word	0x080014fc
+
+080001ec <frame_dummy>:
+ 80001ec:	b508      	push	{r3, lr}
+ 80001ee:	4b03      	ldr	r3, [pc, #12]	; (80001fc <frame_dummy+0x10>)
+ 80001f0:	b11b      	cbz	r3, 80001fa <frame_dummy+0xe>
+ 80001f2:	4903      	ldr	r1, [pc, #12]	; (8000200 <frame_dummy+0x14>)
+ 80001f4:	4803      	ldr	r0, [pc, #12]	; (8000204 <frame_dummy+0x18>)
+ 80001f6:	f3af 8000 	nop.w
+ 80001fa:	bd08      	pop	{r3, pc}
+ 80001fc:	00000000 	.word	0x00000000
+ 8000200:	20000004 	.word	0x20000004
+ 8000204:	080014fc 	.word	0x080014fc
+
+08000208 <dma_reset_flags>:
+#include "dma.h"
+
+void dma_reset_flags(DMA_TypeDef *DMA){
+ 8000208:	b480      	push	{r7}
+ 800020a:	b083      	sub	sp, #12
+ 800020c:	af00      	add	r7, sp, #0
+ 800020e:	6078      	str	r0, [r7, #4]
+	//force clear all flags
+	DMA->LIFCR |= (1U<<0U) | (0x1F<<2U) | (0xF<<8U) | (1U<<16U) | (0x1F<<18U) | (0xF<<24);
+ 8000210:	687b      	ldr	r3, [r7, #4]
+ 8000212:	689a      	ldr	r2, [r3, #8]
+ 8000214:	4b07      	ldr	r3, [pc, #28]	; (8000234 <dma_reset_flags+0x2c>)
+ 8000216:	4313      	orrs	r3, r2
+ 8000218:	687a      	ldr	r2, [r7, #4]
+ 800021a:	6093      	str	r3, [r2, #8]
+	DMA->HIFCR |= (1U<<0U) | (0x1F<<2U) | (0xF<<8U) | (1U<<16U) | (0x1F<<18U) | (0xF<<24);
+ 800021c:	687b      	ldr	r3, [r7, #4]
+ 800021e:	68da      	ldr	r2, [r3, #12]
+ 8000220:	4b04      	ldr	r3, [pc, #16]	; (8000234 <dma_reset_flags+0x2c>)
+ 8000222:	4313      	orrs	r3, r2
+ 8000224:	687a      	ldr	r2, [r7, #4]
+ 8000226:	60d3      	str	r3, [r2, #12]
+}
+ 8000228:	bf00      	nop
+ 800022a:	370c      	adds	r7, #12
+ 800022c:	46bd      	mov	sp, r7
+ 800022e:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000232:	4770      	bx	lr
+ 8000234:	0f7d0f7d 	.word	0x0f7d0f7d
+
+08000238 <upperNibbleToAscii>:
+#include "el_utils.h"
+
+uint8_t upperNibbleToAscii(uint8_t input) {
+ 8000238:	b480      	push	{r7}
+ 800023a:	b083      	sub	sp, #12
+ 800023c:	af00      	add	r7, sp, #0
+ 800023e:	4603      	mov	r3, r0
+ 8000240:	71fb      	strb	r3, [r7, #7]
+	input = input >> 4;
+ 8000242:	79fb      	ldrb	r3, [r7, #7]
+ 8000244:	091b      	lsrs	r3, r3, #4
+ 8000246:	71fb      	strb	r3, [r7, #7]
+	if (input < 0x0A)
+ 8000248:	79fb      	ldrb	r3, [r7, #7]
+ 800024a:	2b09      	cmp	r3, #9
+ 800024c:	d803      	bhi.n	8000256 <upperNibbleToAscii+0x1e>
+		return (input + 0x30);
+ 800024e:	79fb      	ldrb	r3, [r7, #7]
+ 8000250:	3330      	adds	r3, #48	; 0x30
+ 8000252:	b2db      	uxtb	r3, r3
+ 8000254:	e002      	b.n	800025c <upperNibbleToAscii+0x24>
+	else
+		return (input + 0x37);
+ 8000256:	79fb      	ldrb	r3, [r7, #7]
+ 8000258:	3337      	adds	r3, #55	; 0x37
+ 800025a:	b2db      	uxtb	r3, r3
+}
+ 800025c:	4618      	mov	r0, r3
+ 800025e:	370c      	adds	r7, #12
+ 8000260:	46bd      	mov	sp, r7
+ 8000262:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000266:	4770      	bx	lr
+
+08000268 <lowerNibbleToAscii>:
+
+uint8_t lowerNibbleToAscii(uint8_t input) {
+ 8000268:	b480      	push	{r7}
+ 800026a:	b083      	sub	sp, #12
+ 800026c:	af00      	add	r7, sp, #0
+ 800026e:	4603      	mov	r3, r0
+ 8000270:	71fb      	strb	r3, [r7, #7]
+	input = input & 0x0F;
+ 8000272:	79fb      	ldrb	r3, [r7, #7]
+ 8000274:	f003 030f 	and.w	r3, r3, #15
+ 8000278:	71fb      	strb	r3, [r7, #7]
+	if (input < 0x0A)
+ 800027a:	79fb      	ldrb	r3, [r7, #7]
+ 800027c:	2b09      	cmp	r3, #9
+ 800027e:	d803      	bhi.n	8000288 <lowerNibbleToAscii+0x20>
+		return (input + 0x30);
+ 8000280:	79fb      	ldrb	r3, [r7, #7]
+ 8000282:	3330      	adds	r3, #48	; 0x30
+ 8000284:	b2db      	uxtb	r3, r3
+ 8000286:	e002      	b.n	800028e <lowerNibbleToAscii+0x26>
+	else
+		return (input + 0x37);
+ 8000288:	79fb      	ldrb	r3, [r7, #7]
+ 800028a:	3337      	adds	r3, #55	; 0x37
+ 800028c:	b2db      	uxtb	r3, r3
+}
+ 800028e:	4618      	mov	r0, r3
+ 8000290:	370c      	adds	r7, #12
+ 8000292:	46bd      	mov	sp, r7
+ 8000294:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000298:	4770      	bx	lr
+
+0800029a <gpio_setup>:
+
+void gpio_configure_usart1(void);
+void gpio_configure_stm32f746disco_led1(void);
+void gpio_configure_quadspi(void);
+
+void gpio_setup(void) {
+ 800029a:	b580      	push	{r7, lr}
+ 800029c:	af00      	add	r7, sp, #0
+	gpio_configure_usart1();
+ 800029e:	f000 f905 	bl	80004ac <gpio_configure_usart1>
+	gpio_configure_stm32f746disco_led1();
+ 80002a2:	f000 f8df 	bl	8000464 <gpio_configure_stm32f746disco_led1>
+	gpio_configure_quadspi();
+ 80002a6:	f000 f803 	bl	80002b0 <gpio_configure_quadspi>
+}
+ 80002aa:	bf00      	nop
+ 80002ac:	bd80      	pop	{r7, pc}
+	...
+
+080002b0 <gpio_configure_quadspi>:
+
+void gpio_configure_quadspi(void) {
+ 80002b0:	b480      	push	{r7}
+ 80002b2:	af00      	add	r7, sp, #0
+	 */
+
+	/*
+	 * PB2 QSPI CLK
+	 */
+	GPIOB->MODER = (GPIOB->MODER & ~(GPIO_MODER_MODER2_0)) | (GPIO_MODER_MODER2_1); //PB2 set to alternate function
+ 80002b4:	4b68      	ldr	r3, [pc, #416]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002b6:	681b      	ldr	r3, [r3, #0]
+ 80002b8:	f023 0330 	bic.w	r3, r3, #48	; 0x30
+ 80002bc:	4a66      	ldr	r2, [pc, #408]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002be:	f043 0320 	orr.w	r3, r3, #32
+ 80002c2:	6013      	str	r3, [r2, #0]
+	GPIOB->AFR[0] = (GPIOB->AFR[0] & ~(0xFU << GPIO_AFRL_AFRL2_Pos)) | (0x09 << GPIO_AFRL_AFRL2_Pos); //PB2 to AF9
+ 80002c4:	4b64      	ldr	r3, [pc, #400]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002c6:	6a1b      	ldr	r3, [r3, #32]
+ 80002c8:	f423 6370 	bic.w	r3, r3, #3840	; 0xf00
+ 80002cc:	4a62      	ldr	r2, [pc, #392]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002ce:	f443 6310 	orr.w	r3, r3, #2304	; 0x900
+ 80002d2:	6213      	str	r3, [r2, #32]
+	GPIOB->OTYPER &= ~(GPIO_OTYPER_OT_2); //PB2 output push-pull
+ 80002d4:	4b60      	ldr	r3, [pc, #384]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002d6:	685b      	ldr	r3, [r3, #4]
+ 80002d8:	4a5f      	ldr	r2, [pc, #380]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002da:	f023 0304 	bic.w	r3, r3, #4
+ 80002de:	6053      	str	r3, [r2, #4]
+	GPIOB->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR2); //PB2 output speed very high
+ 80002e0:	4b5d      	ldr	r3, [pc, #372]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002e2:	689b      	ldr	r3, [r3, #8]
+ 80002e4:	4a5c      	ldr	r2, [pc, #368]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002e6:	f043 0330 	orr.w	r3, r3, #48	; 0x30
+ 80002ea:	6093      	str	r3, [r2, #8]
+	GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPDR2); //PB2 no pull-up no pull-down
+ 80002ec:	4b5a      	ldr	r3, [pc, #360]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002ee:	68db      	ldr	r3, [r3, #12]
+ 80002f0:	4a59      	ldr	r2, [pc, #356]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002f2:	f023 0330 	bic.w	r3, r3, #48	; 0x30
+ 80002f6:	60d3      	str	r3, [r2, #12]
+
+	/*
+	 * PB6 QSPI NCS
+	 */
+	GPIOB->MODER = (GPIOB->MODER & ~(GPIO_MODER_MODER6_0)) | (GPIO_MODER_MODER6_1); //PB6 set to alternate function
+ 80002f8:	4b57      	ldr	r3, [pc, #348]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 80002fa:	681b      	ldr	r3, [r3, #0]
+ 80002fc:	f423 5340 	bic.w	r3, r3, #12288	; 0x3000
+ 8000300:	4a55      	ldr	r2, [pc, #340]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 8000302:	f443 5300 	orr.w	r3, r3, #8192	; 0x2000
+ 8000306:	6013      	str	r3, [r2, #0]
+	GPIOB->AFR[0] = (GPIOB->AFR[0] & ~(0xFU << GPIO_AFRL_AFRL6_Pos)) | (0x0A << GPIO_AFRL_AFRL6_Pos); //PB6 to AF10
+ 8000308:	4b53      	ldr	r3, [pc, #332]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 800030a:	6a1b      	ldr	r3, [r3, #32]
+ 800030c:	f023 6370 	bic.w	r3, r3, #251658240	; 0xf000000
+ 8000310:	4a51      	ldr	r2, [pc, #324]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 8000312:	f043 6320 	orr.w	r3, r3, #167772160	; 0xa000000
+ 8000316:	6213      	str	r3, [r2, #32]
+	GPIOB->OTYPER &= ~(GPIO_OTYPER_OT_6); //PB6 output push-pull
+ 8000318:	4b4f      	ldr	r3, [pc, #316]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 800031a:	685b      	ldr	r3, [r3, #4]
+ 800031c:	4a4e      	ldr	r2, [pc, #312]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 800031e:	f023 0340 	bic.w	r3, r3, #64	; 0x40
+ 8000322:	6053      	str	r3, [r2, #4]
+	GPIOB->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR6); //PB6 output speed very high
+ 8000324:	4b4c      	ldr	r3, [pc, #304]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 8000326:	689b      	ldr	r3, [r3, #8]
+ 8000328:	4a4b      	ldr	r2, [pc, #300]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 800032a:	f443 5340 	orr.w	r3, r3, #12288	; 0x3000
+ 800032e:	6093      	str	r3, [r2, #8]
+	GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPDR6) | (0x00 << GPIO_PUPDR_PUPDR6_Pos); //PB6 no pull-up no pull-down (has external)
+ 8000330:	4b49      	ldr	r3, [pc, #292]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 8000332:	68db      	ldr	r3, [r3, #12]
+ 8000334:	4a48      	ldr	r2, [pc, #288]	; (8000458 <gpio_configure_quadspi+0x1a8>)
+ 8000336:	f423 5340 	bic.w	r3, r3, #12288	; 0x3000
+ 800033a:	60d3      	str	r3, [r2, #12]
+
+	/*
+	 * PD11 QSPI D0
+	 */
+	GPIOD->MODER = (GPIOD->MODER & ~(GPIO_MODER_MODER11_0)) | (GPIO_MODER_MODER11_1); //PD11 set to alternate function
+ 800033c:	4b47      	ldr	r3, [pc, #284]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 800033e:	681b      	ldr	r3, [r3, #0]
+ 8000340:	f423 0340 	bic.w	r3, r3, #12582912	; 0xc00000
+ 8000344:	4a45      	ldr	r2, [pc, #276]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 8000346:	f443 0300 	orr.w	r3, r3, #8388608	; 0x800000
+ 800034a:	6013      	str	r3, [r2, #0]
+	GPIOD->AFR[1] = (GPIOD->AFR[1] & ~(0xFU << GPIO_AFRH_AFRH3_Pos)) | (0x09 << GPIO_AFRH_AFRH3_Pos); //PD11 to AF9
+ 800034c:	4b43      	ldr	r3, [pc, #268]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 800034e:	6a5b      	ldr	r3, [r3, #36]	; 0x24
+ 8000350:	f423 4370 	bic.w	r3, r3, #61440	; 0xf000
+ 8000354:	4a41      	ldr	r2, [pc, #260]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 8000356:	f443 4310 	orr.w	r3, r3, #36864	; 0x9000
+ 800035a:	6253      	str	r3, [r2, #36]	; 0x24
+	GPIOD->OTYPER &= ~(GPIO_OTYPER_OT_11); //PD11 output push-pull
+ 800035c:	4b3f      	ldr	r3, [pc, #252]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 800035e:	685b      	ldr	r3, [r3, #4]
+ 8000360:	4a3e      	ldr	r2, [pc, #248]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 8000362:	f423 6300 	bic.w	r3, r3, #2048	; 0x800
+ 8000366:	6053      	str	r3, [r2, #4]
+	GPIOD->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR11); //PD11 output speed very high
+ 8000368:	4b3c      	ldr	r3, [pc, #240]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 800036a:	689b      	ldr	r3, [r3, #8]
+ 800036c:	4a3b      	ldr	r2, [pc, #236]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 800036e:	f443 0340 	orr.w	r3, r3, #12582912	; 0xc00000
+ 8000372:	6093      	str	r3, [r2, #8]
+	GPIOD->PUPDR &= ~(GPIO_PUPDR_PUPDR11); //PD11 no pull-up no pull-down
+ 8000374:	4b39      	ldr	r3, [pc, #228]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 8000376:	68db      	ldr	r3, [r3, #12]
+ 8000378:	4a38      	ldr	r2, [pc, #224]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 800037a:	f423 0340 	bic.w	r3, r3, #12582912	; 0xc00000
+ 800037e:	60d3      	str	r3, [r2, #12]
+
+	/*
+	 * PD12 QSPI D1
+	 */
+	GPIOD->MODER = (GPIOD->MODER & ~(GPIO_MODER_MODER12_0)) | (GPIO_MODER_MODER12_1); //PD12 set to alternate function
+ 8000380:	4b36      	ldr	r3, [pc, #216]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 8000382:	681b      	ldr	r3, [r3, #0]
+ 8000384:	f023 7340 	bic.w	r3, r3, #50331648	; 0x3000000
+ 8000388:	4a34      	ldr	r2, [pc, #208]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 800038a:	f043 7300 	orr.w	r3, r3, #33554432	; 0x2000000
+ 800038e:	6013      	str	r3, [r2, #0]
+	GPIOD->AFR[1] = (GPIOD->AFR[1] & ~(0xFU << GPIO_AFRH_AFRH4_Pos)) | (0x09 << GPIO_AFRH_AFRH4_Pos); //PD12 to AF9
+ 8000390:	4b32      	ldr	r3, [pc, #200]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 8000392:	6a5b      	ldr	r3, [r3, #36]	; 0x24
+ 8000394:	f423 2370 	bic.w	r3, r3, #983040	; 0xf0000
+ 8000398:	4a30      	ldr	r2, [pc, #192]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 800039a:	f443 2310 	orr.w	r3, r3, #589824	; 0x90000
+ 800039e:	6253      	str	r3, [r2, #36]	; 0x24
+	GPIOD->OTYPER &= ~(GPIO_OTYPER_OT_12); //PD12 output push-pull
+ 80003a0:	4b2e      	ldr	r3, [pc, #184]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003a2:	685b      	ldr	r3, [r3, #4]
+ 80003a4:	4a2d      	ldr	r2, [pc, #180]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003a6:	f423 5380 	bic.w	r3, r3, #4096	; 0x1000
+ 80003aa:	6053      	str	r3, [r2, #4]
+	GPIOD->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR12); //PD12 output speed very high
+ 80003ac:	4b2b      	ldr	r3, [pc, #172]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003ae:	689b      	ldr	r3, [r3, #8]
+ 80003b0:	4a2a      	ldr	r2, [pc, #168]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003b2:	f043 7340 	orr.w	r3, r3, #50331648	; 0x3000000
+ 80003b6:	6093      	str	r3, [r2, #8]
+	GPIOD->PUPDR &= ~(GPIO_PUPDR_PUPDR12); //PD12 no pull-up no pull-down
+ 80003b8:	4b28      	ldr	r3, [pc, #160]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003ba:	68db      	ldr	r3, [r3, #12]
+ 80003bc:	4a27      	ldr	r2, [pc, #156]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003be:	f023 7340 	bic.w	r3, r3, #50331648	; 0x3000000
+ 80003c2:	60d3      	str	r3, [r2, #12]
+
+	/*
+	 * PD13 QSPI D3
+	 */
+	GPIOD->MODER = (GPIOD->MODER & ~(GPIO_MODER_MODER13_0)) | (GPIO_MODER_MODER13_1); //PD13 set to alternate function
+ 80003c4:	4b25      	ldr	r3, [pc, #148]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003c6:	681b      	ldr	r3, [r3, #0]
+ 80003c8:	f023 6340 	bic.w	r3, r3, #201326592	; 0xc000000
+ 80003cc:	4a23      	ldr	r2, [pc, #140]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003ce:	f043 6300 	orr.w	r3, r3, #134217728	; 0x8000000
+ 80003d2:	6013      	str	r3, [r2, #0]
+	GPIOD->AFR[1] = (GPIOD->AFR[1] & ~(0xFU << GPIO_AFRH_AFRH5_Pos)) | (0x09 << GPIO_AFRH_AFRH5_Pos); //PD13 to AF9
+ 80003d4:	4b21      	ldr	r3, [pc, #132]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003d6:	6a5b      	ldr	r3, [r3, #36]	; 0x24
+ 80003d8:	f423 0370 	bic.w	r3, r3, #15728640	; 0xf00000
+ 80003dc:	4a1f      	ldr	r2, [pc, #124]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003de:	f443 0310 	orr.w	r3, r3, #9437184	; 0x900000
+ 80003e2:	6253      	str	r3, [r2, #36]	; 0x24
+	GPIOD->OTYPER &= ~(GPIO_OTYPER_OT_13); //PD13 output push-pull
+ 80003e4:	4b1d      	ldr	r3, [pc, #116]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003e6:	685b      	ldr	r3, [r3, #4]
+ 80003e8:	4a1c      	ldr	r2, [pc, #112]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003ea:	f423 5300 	bic.w	r3, r3, #8192	; 0x2000
+ 80003ee:	6053      	str	r3, [r2, #4]
+	GPIOD->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR13); //PD13 output speed very high
+ 80003f0:	4b1a      	ldr	r3, [pc, #104]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003f2:	689b      	ldr	r3, [r3, #8]
+ 80003f4:	4a19      	ldr	r2, [pc, #100]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003f6:	f043 6340 	orr.w	r3, r3, #201326592	; 0xc000000
+ 80003fa:	6093      	str	r3, [r2, #8]
+	GPIOD->PUPDR &= ~(GPIO_PUPDR_PUPDR13); //PD13 no pull-up no pull-down
+ 80003fc:	4b17      	ldr	r3, [pc, #92]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 80003fe:	68db      	ldr	r3, [r3, #12]
+ 8000400:	4a16      	ldr	r2, [pc, #88]	; (800045c <gpio_configure_quadspi+0x1ac>)
+ 8000402:	f023 6340 	bic.w	r3, r3, #201326592	; 0xc000000
+ 8000406:	60d3      	str	r3, [r2, #12]
+
+	/*
+	 * PE2 QSPI D2
+	 */
+	GPIOE->MODER = (GPIOE->MODER & ~(GPIO_MODER_MODER2_0)) | (GPIO_MODER_MODER2_1); //PE2 set to alternate function
+ 8000408:	4b15      	ldr	r3, [pc, #84]	; (8000460 <gpio_configure_quadspi+0x1b0>)
+ 800040a:	681b      	ldr	r3, [r3, #0]
+ 800040c:	f023 0330 	bic.w	r3, r3, #48	; 0x30
+ 8000410:	4a13      	ldr	r2, [pc, #76]	; (8000460 <gpio_configure_quadspi+0x1b0>)
+ 8000412:	f043 0320 	orr.w	r3, r3, #32
+ 8000416:	6013      	str	r3, [r2, #0]
+	GPIOE->AFR[0] = (GPIOE->AFR[0] & ~(0xFU << GPIO_AFRL_AFRL2_Pos)) | (0x09 << GPIO_AFRL_AFRL2_Pos); //PE2 to AF9
+ 8000418:	4b11      	ldr	r3, [pc, #68]	; (8000460 <gpio_configure_quadspi+0x1b0>)
+ 800041a:	6a1b      	ldr	r3, [r3, #32]
+ 800041c:	f423 6370 	bic.w	r3, r3, #3840	; 0xf00
+ 8000420:	4a0f      	ldr	r2, [pc, #60]	; (8000460 <gpio_configure_quadspi+0x1b0>)
+ 8000422:	f443 6310 	orr.w	r3, r3, #2304	; 0x900
+ 8000426:	6213      	str	r3, [r2, #32]
+	GPIOE->OTYPER &= ~(GPIO_OTYPER_OT_2); //PE2 output push-pull
+ 8000428:	4b0d      	ldr	r3, [pc, #52]	; (8000460 <gpio_configure_quadspi+0x1b0>)
+ 800042a:	685b      	ldr	r3, [r3, #4]
+ 800042c:	4a0c      	ldr	r2, [pc, #48]	; (8000460 <gpio_configure_quadspi+0x1b0>)
+ 800042e:	f023 0304 	bic.w	r3, r3, #4
+ 8000432:	6053      	str	r3, [r2, #4]
+	GPIOE->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR2); //PE2 output speed very high
+ 8000434:	4b0a      	ldr	r3, [pc, #40]	; (8000460 <gpio_configure_quadspi+0x1b0>)
+ 8000436:	689b      	ldr	r3, [r3, #8]
+ 8000438:	4a09      	ldr	r2, [pc, #36]	; (8000460 <gpio_configure_quadspi+0x1b0>)
+ 800043a:	f043 0330 	orr.w	r3, r3, #48	; 0x30
+ 800043e:	6093      	str	r3, [r2, #8]
+	GPIOE->PUPDR &= ~(GPIO_PUPDR_PUPDR2); //PE2 no pull-up no pull-down
+ 8000440:	4b07      	ldr	r3, [pc, #28]	; (8000460 <gpio_configure_quadspi+0x1b0>)
+ 8000442:	68db      	ldr	r3, [r3, #12]
+ 8000444:	4a06      	ldr	r2, [pc, #24]	; (8000460 <gpio_configure_quadspi+0x1b0>)
+ 8000446:	f023 0330 	bic.w	r3, r3, #48	; 0x30
+ 800044a:	60d3      	str	r3, [r2, #12]
+
+}
+ 800044c:	bf00      	nop
+ 800044e:	46bd      	mov	sp, r7
+ 8000450:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000454:	4770      	bx	lr
+ 8000456:	bf00      	nop
+ 8000458:	40020400 	.word	0x40020400
+ 800045c:	40020c00 	.word	0x40020c00
+ 8000460:	40021000 	.word	0x40021000
+
+08000464 <gpio_configure_stm32f746disco_led1>:
+
+void gpio_configure_stm32f746disco_led1(void) {
+ 8000464:	b480      	push	{r7}
+ 8000466:	af00      	add	r7, sp, #0
+	/*
+	 *  PI1 GREEN LED LD1 ACTIVE HIGH
+	 * */
+	GPIOI->MODER = (GPIOI->MODER & ~(1U << 3U)) | (1U << 2U); //PI1 set to general purpose output mode
+ 8000468:	4b0f      	ldr	r3, [pc, #60]	; (80004a8 <gpio_configure_stm32f746disco_led1+0x44>)
+ 800046a:	681b      	ldr	r3, [r3, #0]
+ 800046c:	f023 030c 	bic.w	r3, r3, #12
+ 8000470:	4a0d      	ldr	r2, [pc, #52]	; (80004a8 <gpio_configure_stm32f746disco_led1+0x44>)
+ 8000472:	f043 0304 	orr.w	r3, r3, #4
+ 8000476:	6013      	str	r3, [r2, #0]
+	GPIOI->OTYPER &= ~(GPIO_OTYPER_OT_1); //PI1 output push-pull
+ 8000478:	4b0b      	ldr	r3, [pc, #44]	; (80004a8 <gpio_configure_stm32f746disco_led1+0x44>)
+ 800047a:	685b      	ldr	r3, [r3, #4]
+ 800047c:	4a0a      	ldr	r2, [pc, #40]	; (80004a8 <gpio_configure_stm32f746disco_led1+0x44>)
+ 800047e:	f023 0302 	bic.w	r3, r3, #2
+ 8000482:	6053      	str	r3, [r2, #4]
+	GPIOI->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEEDR1); //PI1 output speed very low
+ 8000484:	4b08      	ldr	r3, [pc, #32]	; (80004a8 <gpio_configure_stm32f746disco_led1+0x44>)
+ 8000486:	689b      	ldr	r3, [r3, #8]
+ 8000488:	4a07      	ldr	r2, [pc, #28]	; (80004a8 <gpio_configure_stm32f746disco_led1+0x44>)
+ 800048a:	f023 030c 	bic.w	r3, r3, #12
+ 800048e:	6093      	str	r3, [r2, #8]
+	GPIOI->PUPDR &= ~(GPIO_PUPDR_PUPDR1); //PI1 no pull-up no pull-down
+ 8000490:	4b05      	ldr	r3, [pc, #20]	; (80004a8 <gpio_configure_stm32f746disco_led1+0x44>)
+ 8000492:	68db      	ldr	r3, [r3, #12]
+ 8000494:	4a04      	ldr	r2, [pc, #16]	; (80004a8 <gpio_configure_stm32f746disco_led1+0x44>)
+ 8000496:	f023 030c 	bic.w	r3, r3, #12
+ 800049a:	60d3      	str	r3, [r2, #12]
+}
+ 800049c:	bf00      	nop
+ 800049e:	46bd      	mov	sp, r7
+ 80004a0:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 80004a4:	4770      	bx	lr
+ 80004a6:	bf00      	nop
+ 80004a8:	40022000 	.word	0x40022000
+
+080004ac <gpio_configure_usart1>:
+
+void gpio_configure_usart1(void) {
+ 80004ac:	b480      	push	{r7}
+ 80004ae:	af00      	add	r7, sp, #0
+	 */
+
+	/*
+	 * PA9 USART1 TX
+	 */
+	GPIOA->MODER = (GPIOA->MODER & ~(GPIO_MODER_MODER9_0)) | GPIO_MODER_MODER9_1; //PA9 set to alternate function
+ 80004b0:	4b24      	ldr	r3, [pc, #144]	; (8000544 <gpio_configure_usart1+0x98>)
+ 80004b2:	681b      	ldr	r3, [r3, #0]
+ 80004b4:	f423 2340 	bic.w	r3, r3, #786432	; 0xc0000
+ 80004b8:	4a22      	ldr	r2, [pc, #136]	; (8000544 <gpio_configure_usart1+0x98>)
+ 80004ba:	f443 2300 	orr.w	r3, r3, #524288	; 0x80000
+ 80004be:	6013      	str	r3, [r2, #0]
+	GPIOA->AFR[1] = (GPIOA->AFR[1] & ~(1U << 7)) | (0x07 << 4); //PA9 to AF7
+ 80004c0:	4b20      	ldr	r3, [pc, #128]	; (8000544 <gpio_configure_usart1+0x98>)
+ 80004c2:	6a5b      	ldr	r3, [r3, #36]	; 0x24
+ 80004c4:	f023 03f0 	bic.w	r3, r3, #240	; 0xf0
+ 80004c8:	4a1e      	ldr	r2, [pc, #120]	; (8000544 <gpio_configure_usart1+0x98>)
+ 80004ca:	f043 0370 	orr.w	r3, r3, #112	; 0x70
+ 80004ce:	6253      	str	r3, [r2, #36]	; 0x24
+	GPIOA->OTYPER &= ~GPIO_OTYPER_OT9; //PA9 output push-pull
+ 80004d0:	4b1c      	ldr	r3, [pc, #112]	; (8000544 <gpio_configure_usart1+0x98>)
+ 80004d2:	685b      	ldr	r3, [r3, #4]
+ 80004d4:	4a1b      	ldr	r2, [pc, #108]	; (8000544 <gpio_configure_usart1+0x98>)
+ 80004d6:	f423 7300 	bic.w	r3, r3, #512	; 0x200
+ 80004da:	6053      	str	r3, [r2, #4]
+	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEEDR9; //PA9 output speed very high
+ 80004dc:	4b19      	ldr	r3, [pc, #100]	; (8000544 <gpio_configure_usart1+0x98>)
+ 80004de:	689b      	ldr	r3, [r3, #8]
+ 80004e0:	4a18      	ldr	r2, [pc, #96]	; (8000544 <gpio_configure_usart1+0x98>)
+ 80004e2:	f443 2340 	orr.w	r3, r3, #786432	; 0xc0000
+ 80004e6:	6093      	str	r3, [r2, #8]
+	GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR9; //PA9 no pull-up no pull-down
+ 80004e8:	4b16      	ldr	r3, [pc, #88]	; (8000544 <gpio_configure_usart1+0x98>)
+ 80004ea:	68db      	ldr	r3, [r3, #12]
+ 80004ec:	4a15      	ldr	r2, [pc, #84]	; (8000544 <gpio_configure_usart1+0x98>)
+ 80004ee:	f423 2340 	bic.w	r3, r3, #786432	; 0xc0000
+ 80004f2:	60d3      	str	r3, [r2, #12]
+
+	/*
+	 * PB7 USART1 RX
+	 */
+	GPIOB->MODER = (GPIOB->MODER & ~(GPIO_MODER_MODER7_0)) | (GPIO_MODER_MODER7_1); //PB7 set to alternate function
+ 80004f4:	4b14      	ldr	r3, [pc, #80]	; (8000548 <gpio_configure_usart1+0x9c>)
+ 80004f6:	681b      	ldr	r3, [r3, #0]
+ 80004f8:	f423 4340 	bic.w	r3, r3, #49152	; 0xc000
+ 80004fc:	4a12      	ldr	r2, [pc, #72]	; (8000548 <gpio_configure_usart1+0x9c>)
+ 80004fe:	f443 4300 	orr.w	r3, r3, #32768	; 0x8000
+ 8000502:	6013      	str	r3, [r2, #0]
+	GPIOB->AFR[0] = (GPIOB->AFR[0] & ~(1U << 31)) | (0x07 << 28); //PB7 to AF7
+ 8000504:	4b10      	ldr	r3, [pc, #64]	; (8000548 <gpio_configure_usart1+0x9c>)
+ 8000506:	6a1b      	ldr	r3, [r3, #32]
+ 8000508:	f023 4370 	bic.w	r3, r3, #4026531840	; 0xf0000000
+ 800050c:	4a0e      	ldr	r2, [pc, #56]	; (8000548 <gpio_configure_usart1+0x9c>)
+ 800050e:	f043 43e0 	orr.w	r3, r3, #1879048192	; 0x70000000
+ 8000512:	6213      	str	r3, [r2, #32]
+	GPIOB->OTYPER &= ~(GPIO_OTYPER_OT_7); //PB7 output push-pull
+ 8000514:	4b0c      	ldr	r3, [pc, #48]	; (8000548 <gpio_configure_usart1+0x9c>)
+ 8000516:	685b      	ldr	r3, [r3, #4]
+ 8000518:	4a0b      	ldr	r2, [pc, #44]	; (8000548 <gpio_configure_usart1+0x9c>)
+ 800051a:	f023 0380 	bic.w	r3, r3, #128	; 0x80
+ 800051e:	6053      	str	r3, [r2, #4]
+	GPIOB->OSPEEDR |= (GPIO_OSPEEDR_OSPEEDR7); //PB7 output speed very high
+ 8000520:	4b09      	ldr	r3, [pc, #36]	; (8000548 <gpio_configure_usart1+0x9c>)
+ 8000522:	689b      	ldr	r3, [r3, #8]
+ 8000524:	4a08      	ldr	r2, [pc, #32]	; (8000548 <gpio_configure_usart1+0x9c>)
+ 8000526:	f443 4340 	orr.w	r3, r3, #49152	; 0xc000
+ 800052a:	6093      	str	r3, [r2, #8]
+	GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPDR7); //PB7 no pull-up no pull-down
+ 800052c:	4b06      	ldr	r3, [pc, #24]	; (8000548 <gpio_configure_usart1+0x9c>)
+ 800052e:	68db      	ldr	r3, [r3, #12]
+ 8000530:	4a05      	ldr	r2, [pc, #20]	; (8000548 <gpio_configure_usart1+0x9c>)
+ 8000532:	f423 4340 	bic.w	r3, r3, #49152	; 0xc000
+ 8000536:	60d3      	str	r3, [r2, #12]
+}
+ 8000538:	bf00      	nop
+ 800053a:	46bd      	mov	sp, r7
+ 800053c:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000540:	4770      	bx	lr
+ 8000542:	bf00      	nop
+ 8000544:	40020000 	.word	0x40020000
+ 8000548:	40020400 	.word	0x40020400
+
+0800054c <toggle_stm32f746disco_ld1>:
+
+
+void toggle_stm32f746disco_ld1(void) {
+ 800054c:	b480      	push	{r7}
+ 800054e:	af00      	add	r7, sp, #0
+	GPIOI->ODR ^= GPIO_ODR_OD1;
+ 8000550:	4b05      	ldr	r3, [pc, #20]	; (8000568 <toggle_stm32f746disco_ld1+0x1c>)
+ 8000552:	695b      	ldr	r3, [r3, #20]
+ 8000554:	4a04      	ldr	r2, [pc, #16]	; (8000568 <toggle_stm32f746disco_ld1+0x1c>)
+ 8000556:	f083 0302 	eor.w	r3, r3, #2
+ 800055a:	6153      	str	r3, [r2, #20]
+}
+ 800055c:	bf00      	nop
+ 800055e:	46bd      	mov	sp, r7
+ 8000560:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000564:	4770      	bx	lr
+ 8000566:	bf00      	nop
+ 8000568:	40022000 	.word	0x40022000
+
+0800056c <main>:
+#include "main.h"
+
+void system_hw_setup(void);
+void printQspiFlashConfigs(void);
+
+int main(void) {
+ 800056c:	b5b0      	push	{r4, r5, r7, lr}
+ 800056e:	b09c      	sub	sp, #112	; 0x70
+ 8000570:	af00      	add	r7, sp, #0
+	 * Write the first 8 bytes to Flash
+	 * Print the first 8 bytes via UART
+	 * Victoriously blink an LED
+	 * */
+
+	system_hw_setup(); //initialize hardware
+ 8000572:	f000 f8f9 	bl	8000768 <system_hw_setup>
+	unsigned char programStart[] = "\r\nProgram start\r\n";
+ 8000576:	4b77      	ldr	r3, [pc, #476]	; (8000754 <main+0x1e8>)
+ 8000578:	f107 045c 	add.w	r4, r7, #92	; 0x5c
+ 800057c:	461d      	mov	r5, r3
+ 800057e:	cd0f      	ldmia	r5!, {r0, r1, r2, r3}
+ 8000580:	c40f      	stmia	r4!, {r0, r1, r2, r3}
+ 8000582:	682b      	ldr	r3, [r5, #0]
+ 8000584:	8023      	strh	r3, [r4, #0]
+	usart_dma_sendArray(USART1, (uint8_t *) programStart, sizeof(programStart));
+ 8000586:	f107 035c 	add.w	r3, r7, #92	; 0x5c
+ 800058a:	2212      	movs	r2, #18
+ 800058c:	4619      	mov	r1, r3
+ 800058e:	4872      	ldr	r0, [pc, #456]	; (8000758 <main+0x1ec>)
+ 8000590:	f000 ff42 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100);
+ 8000594:	2064      	movs	r0, #100	; 0x64
+ 8000596:	f000 fe89 	bl	80012ac <system_msdelay>
+
+
+	/* Print QSPI Flash configuration registers via UART */
+	printQspiFlashConfigs();
+ 800059a:	f000 f90f 	bl	80007bc <printQspiFlashConfigs>
+
+	/* ---------- QUADSPI ERASE TEST ---------- */
+
+	/* Erase the first 4kb subsector */
+	QSPI_eraseQuad(MT25QL128ABA1EW9_COMMAND_4KB_SUBSECTOR_ERASE, 0x000000);
+ 800059e:	2100      	movs	r1, #0
+ 80005a0:	2020      	movs	r0, #32
+ 80005a2:	f000 fc03 	bl	8000dac <QSPI_eraseQuad>
+
+	/* Read first 8 bytes of memory */
+	uint8_t memoryContent[8];
+	QSPI_readMemoryBytesQuad(0x000000, 8U, memoryContent);
+ 80005a6:	f107 0354 	add.w	r3, r7, #84	; 0x54
+ 80005aa:	461a      	mov	r2, r3
+ 80005ac:	2108      	movs	r1, #8
+ 80005ae:	2000      	movs	r0, #0
+ 80005b0:	f000 fbb6 	bl	8000d20 <QSPI_readMemoryBytesQuad>
+
+	/* Print these 8 bytes over UART */
+	uint8_t memoryContentChars[sizeof(memoryContent) * 2U]; //every byte is two hex chars
+	for (uint8_t i = 0; i < sizeof(memoryContent); i++) {
+ 80005b4:	2300      	movs	r3, #0
+ 80005b6:	f887 306f 	strb.w	r3, [r7, #111]	; 0x6f
+ 80005ba:	e02d      	b.n	8000618 <main+0xac>
+		memoryContentChars[2 * i] = upperNibbleToAscii(memoryContent[i]);
+ 80005bc:	f897 306f 	ldrb.w	r3, [r7, #111]	; 0x6f
+ 80005c0:	f107 0270 	add.w	r2, r7, #112	; 0x70
+ 80005c4:	4413      	add	r3, r2
+ 80005c6:	f813 2c1c 	ldrb.w	r2, [r3, #-28]
+ 80005ca:	f897 306f 	ldrb.w	r3, [r7, #111]	; 0x6f
+ 80005ce:	005c      	lsls	r4, r3, #1
+ 80005d0:	4610      	mov	r0, r2
+ 80005d2:	f7ff fe31 	bl	8000238 <upperNibbleToAscii>
+ 80005d6:	4603      	mov	r3, r0
+ 80005d8:	461a      	mov	r2, r3
+ 80005da:	f107 0370 	add.w	r3, r7, #112	; 0x70
+ 80005de:	4423      	add	r3, r4
+ 80005e0:	f803 2c2c 	strb.w	r2, [r3, #-44]
+		memoryContentChars[2 * i + 1] = lowerNibbleToAscii(memoryContent[i]);
+ 80005e4:	f897 306f 	ldrb.w	r3, [r7, #111]	; 0x6f
+ 80005e8:	f107 0270 	add.w	r2, r7, #112	; 0x70
+ 80005ec:	4413      	add	r3, r2
+ 80005ee:	f813 2c1c 	ldrb.w	r2, [r3, #-28]
+ 80005f2:	f897 306f 	ldrb.w	r3, [r7, #111]	; 0x6f
+ 80005f6:	005b      	lsls	r3, r3, #1
+ 80005f8:	1c5c      	adds	r4, r3, #1
+ 80005fa:	4610      	mov	r0, r2
+ 80005fc:	f7ff fe34 	bl	8000268 <lowerNibbleToAscii>
+ 8000600:	4603      	mov	r3, r0
+ 8000602:	461a      	mov	r2, r3
+ 8000604:	f107 0370 	add.w	r3, r7, #112	; 0x70
+ 8000608:	4423      	add	r3, r4
+ 800060a:	f803 2c2c 	strb.w	r2, [r3, #-44]
+	for (uint8_t i = 0; i < sizeof(memoryContent); i++) {
+ 800060e:	f897 306f 	ldrb.w	r3, [r7, #111]	; 0x6f
+ 8000612:	3301      	adds	r3, #1
+ 8000614:	f887 306f 	strb.w	r3, [r7, #111]	; 0x6f
+ 8000618:	f897 306f 	ldrb.w	r3, [r7, #111]	; 0x6f
+ 800061c:	2b07      	cmp	r3, #7
+ 800061e:	d9cd      	bls.n	80005bc <main+0x50>
+	}
+	unsigned char memoryAddressString[] = "Memory at 0x000000: 0x";
+ 8000620:	4b4e      	ldr	r3, [pc, #312]	; (800075c <main+0x1f0>)
+ 8000622:	f107 042c 	add.w	r4, r7, #44	; 0x2c
+ 8000626:	461d      	mov	r5, r3
+ 8000628:	cd0f      	ldmia	r5!, {r0, r1, r2, r3}
+ 800062a:	c40f      	stmia	r4!, {r0, r1, r2, r3}
+ 800062c:	e895 0003 	ldmia.w	r5, {r0, r1}
+ 8000630:	6020      	str	r0, [r4, #0]
+ 8000632:	3404      	adds	r4, #4
+ 8000634:	8021      	strh	r1, [r4, #0]
+ 8000636:	3402      	adds	r4, #2
+ 8000638:	0c0b      	lsrs	r3, r1, #16
+ 800063a:	7023      	strb	r3, [r4, #0]
+	usart_dma_sendArray(USART1, (uint8_t *)memoryAddressString, sizeof(memoryAddressString) - 1U);
+ 800063c:	f107 032c 	add.w	r3, r7, #44	; 0x2c
+ 8000640:	2216      	movs	r2, #22
+ 8000642:	4619      	mov	r1, r3
+ 8000644:	4844      	ldr	r0, [pc, #272]	; (8000758 <main+0x1ec>)
+ 8000646:	f000 fee7 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(40U);
+ 800064a:	2028      	movs	r0, #40	; 0x28
+ 800064c:	f000 fe2e 	bl	80012ac <system_msdelay>
+
+	usart_dma_sendArray(USART1, memoryContentChars, sizeof(memoryContentChars));
+ 8000650:	f107 0344 	add.w	r3, r7, #68	; 0x44
+ 8000654:	2210      	movs	r2, #16
+ 8000656:	4619      	mov	r1, r3
+ 8000658:	483f      	ldr	r0, [pc, #252]	; (8000758 <main+0x1ec>)
+ 800065a:	f000 fedd 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100U);
+ 800065e:	2064      	movs	r0, #100	; 0x64
+ 8000660:	f000 fe24 	bl	80012ac <system_msdelay>
+
+	/* ---------- QUADSPI PROGRAM TEST ---------- */
+
+	unsigned char newLine[] = "\r\nWriting to Flash via QUADSPI\r\n";
+ 8000664:	4b3e      	ldr	r3, [pc, #248]	; (8000760 <main+0x1f4>)
+ 8000666:	f107 0408 	add.w	r4, r7, #8
+ 800066a:	461d      	mov	r5, r3
+ 800066c:	cd0f      	ldmia	r5!, {r0, r1, r2, r3}
+ 800066e:	c40f      	stmia	r4!, {r0, r1, r2, r3}
+ 8000670:	cd0f      	ldmia	r5!, {r0, r1, r2, r3}
+ 8000672:	c40f      	stmia	r4!, {r0, r1, r2, r3}
+ 8000674:	682b      	ldr	r3, [r5, #0]
+ 8000676:	7023      	strb	r3, [r4, #0]
+	usart_dma_sendArray(USART1, (uint8_t *) newLine, sizeof(newLine) - 1U);
+ 8000678:	f107 0308 	add.w	r3, r7, #8
+ 800067c:	2220      	movs	r2, #32
+ 800067e:	4619      	mov	r1, r3
+ 8000680:	4835      	ldr	r0, [pc, #212]	; (8000758 <main+0x1ec>)
+ 8000682:	f000 fec9 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100U);
+ 8000686:	2064      	movs	r0, #100	; 0x64
+ 8000688:	f000 fe10 	bl	80012ac <system_msdelay>
+
+	/* Write to the first 8 bytes*/
+	uint8_t dataToWrite[] = { 0xFA, 0xCE, 0x8D, 0x00, 0xFA, 0xCA, 0xDE, 0x07 };
+ 800068c:	4a35      	ldr	r2, [pc, #212]	; (8000764 <main+0x1f8>)
+ 800068e:	463b      	mov	r3, r7
+ 8000690:	e892 0003 	ldmia.w	r2, {r0, r1}
+ 8000694:	e883 0003 	stmia.w	r3, {r0, r1}
+	QSPI_programMemoryBytesQuad(0x000000, sizeof(dataToWrite), dataToWrite);
+ 8000698:	463b      	mov	r3, r7
+ 800069a:	461a      	mov	r2, r3
+ 800069c:	2108      	movs	r1, #8
+ 800069e:	2000      	movs	r0, #0
+ 80006a0:	f000 fbc4 	bl	8000e2c <QSPI_programMemoryBytesQuad>
+
+	QSPI_readMemoryBytesQuad(0x000000, 8U, memoryContent);
+ 80006a4:	f107 0354 	add.w	r3, r7, #84	; 0x54
+ 80006a8:	461a      	mov	r2, r3
+ 80006aa:	2108      	movs	r1, #8
+ 80006ac:	2000      	movs	r0, #0
+ 80006ae:	f000 fb37 	bl	8000d20 <QSPI_readMemoryBytesQuad>
+
+	for (uint8_t i = 0; i < sizeof(memoryContent); i++) {
+ 80006b2:	2300      	movs	r3, #0
+ 80006b4:	f887 306e 	strb.w	r3, [r7, #110]	; 0x6e
+ 80006b8:	e02d      	b.n	8000716 <main+0x1aa>
+		memoryContentChars[2 * i] = upperNibbleToAscii(memoryContent[i]);
+ 80006ba:	f897 306e 	ldrb.w	r3, [r7, #110]	; 0x6e
+ 80006be:	f107 0270 	add.w	r2, r7, #112	; 0x70
+ 80006c2:	4413      	add	r3, r2
+ 80006c4:	f813 2c1c 	ldrb.w	r2, [r3, #-28]
+ 80006c8:	f897 306e 	ldrb.w	r3, [r7, #110]	; 0x6e
+ 80006cc:	005c      	lsls	r4, r3, #1
+ 80006ce:	4610      	mov	r0, r2
+ 80006d0:	f7ff fdb2 	bl	8000238 <upperNibbleToAscii>
+ 80006d4:	4603      	mov	r3, r0
+ 80006d6:	461a      	mov	r2, r3
+ 80006d8:	f107 0370 	add.w	r3, r7, #112	; 0x70
+ 80006dc:	4423      	add	r3, r4
+ 80006de:	f803 2c2c 	strb.w	r2, [r3, #-44]
+		memoryContentChars[2 * i + 1] = lowerNibbleToAscii(memoryContent[i]);
+ 80006e2:	f897 306e 	ldrb.w	r3, [r7, #110]	; 0x6e
+ 80006e6:	f107 0270 	add.w	r2, r7, #112	; 0x70
+ 80006ea:	4413      	add	r3, r2
+ 80006ec:	f813 2c1c 	ldrb.w	r2, [r3, #-28]
+ 80006f0:	f897 306e 	ldrb.w	r3, [r7, #110]	; 0x6e
+ 80006f4:	005b      	lsls	r3, r3, #1
+ 80006f6:	1c5c      	adds	r4, r3, #1
+ 80006f8:	4610      	mov	r0, r2
+ 80006fa:	f7ff fdb5 	bl	8000268 <lowerNibbleToAscii>
+ 80006fe:	4603      	mov	r3, r0
+ 8000700:	461a      	mov	r2, r3
+ 8000702:	f107 0370 	add.w	r3, r7, #112	; 0x70
+ 8000706:	4423      	add	r3, r4
+ 8000708:	f803 2c2c 	strb.w	r2, [r3, #-44]
+	for (uint8_t i = 0; i < sizeof(memoryContent); i++) {
+ 800070c:	f897 306e 	ldrb.w	r3, [r7, #110]	; 0x6e
+ 8000710:	3301      	adds	r3, #1
+ 8000712:	f887 306e 	strb.w	r3, [r7, #110]	; 0x6e
+ 8000716:	f897 306e 	ldrb.w	r3, [r7, #110]	; 0x6e
+ 800071a:	2b07      	cmp	r3, #7
+ 800071c:	d9cd      	bls.n	80006ba <main+0x14e>
+	}
+	usart_dma_sendArray(USART1, (uint8_t *)memoryAddressString, sizeof(memoryAddressString) - 1U);
+ 800071e:	f107 032c 	add.w	r3, r7, #44	; 0x2c
+ 8000722:	2216      	movs	r2, #22
+ 8000724:	4619      	mov	r1, r3
+ 8000726:	480c      	ldr	r0, [pc, #48]	; (8000758 <main+0x1ec>)
+ 8000728:	f000 fe76 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(40U);
+ 800072c:	2028      	movs	r0, #40	; 0x28
+ 800072e:	f000 fdbd 	bl	80012ac <system_msdelay>
+
+	usart_dma_sendArray(USART1, memoryContentChars, sizeof(memoryContentChars));
+ 8000732:	f107 0344 	add.w	r3, r7, #68	; 0x44
+ 8000736:	2210      	movs	r2, #16
+ 8000738:	4619      	mov	r1, r3
+ 800073a:	4807      	ldr	r0, [pc, #28]	; (8000758 <main+0x1ec>)
+ 800073c:	f000 fe6c 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100U);
+ 8000740:	2064      	movs	r0, #100	; 0x64
+ 8000742:	f000 fdb3 	bl	80012ac <system_msdelay>
+
+	/* ---------- END OF QUADSPI TEST ---------- */
+
+	while (1) {
+		toggle_stm32f746disco_ld1();
+ 8000746:	f7ff ff01 	bl	800054c <toggle_stm32f746disco_ld1>
+		system_msdelay(200U);
+ 800074a:	20c8      	movs	r0, #200	; 0xc8
+ 800074c:	f000 fdae 	bl	80012ac <system_msdelay>
+		toggle_stm32f746disco_ld1();
+ 8000750:	e7f9      	b.n	8000746 <main+0x1da>
+ 8000752:	bf00      	nop
+ 8000754:	08001514 	.word	0x08001514
+ 8000758:	40011000 	.word	0x40011000
+ 800075c:	08001528 	.word	0x08001528
+ 8000760:	08001540 	.word	0x08001540
+ 8000764:	08001564 	.word	0x08001564
+
+08000768 <system_hw_setup>:
+	}
+}
+
+void system_hw_setup(void) {
+ 8000768:	b580      	push	{r7, lr}
+ 800076a:	af00      	add	r7, sp, #0
+	rcc_setup(); //clock for peripheral, clock will not be altered; therefore default HSI 16MHz
+ 800076c:	f000 fbbe 	bl	8000eec <rcc_setup>
+	systick_setup(SYSTEM_FREQUENCY); //activate systick
+ 8000770:	480e      	ldr	r0, [pc, #56]	; (80007ac <system_hw_setup+0x44>)
+ 8000772:	f000 fd5b 	bl	800122c <systick_setup>
+	gpio_setup(); //set pin modes and functions
+ 8000776:	f7ff fd90 	bl	800029a <gpio_setup>
+	dma_reset_flags(DMA2); //clear DMA2 flags for USART1
+ 800077a:	480d      	ldr	r0, [pc, #52]	; (80007b0 <system_hw_setup+0x48>)
+ 800077c:	f7ff fd44 	bl	8000208 <dma_reset_flags>
+	dma_reset_flags(DMA1); //clear DMA1 flags for I2C3
+ 8000780:	480c      	ldr	r0, [pc, #48]	; (80007b4 <system_hw_setup+0x4c>)
+ 8000782:	f7ff fd41 	bl	8000208 <dma_reset_flags>
+	usart_dma_setup(USART1); //set control registers and settings for USART1 and its DMA connected to st-link
+ 8000786:	480c      	ldr	r0, [pc, #48]	; (80007b8 <system_hw_setup+0x50>)
+ 8000788:	f000 fdda 	bl	8001340 <usart_dma_setup>
+	usart_enable(USART1); //enable uart1
+ 800078c:	480a      	ldr	r0, [pc, #40]	; (80007b8 <system_hw_setup+0x50>)
+ 800078e:	f000 fda3 	bl	80012d8 <usart_enable>
+	usart_enable_tx(USART1); //enable tx line (wrapper)
+ 8000792:	4809      	ldr	r0, [pc, #36]	; (80007b8 <system_hw_setup+0x50>)
+ 8000794:	f000 fdb0 	bl	80012f8 <usart_enable_tx>
+	usart_enable_rx(USART1); //enable rx line (wrapper)
+ 8000798:	4807      	ldr	r0, [pc, #28]	; (80007b8 <system_hw_setup+0x50>)
+ 800079a:	f000 fdbf 	bl	800131c <usart_enable_rx>
+	QSPI_setupIndirect(); //setup qspi in indirect mode
+ 800079e:	f000 f9cd 	bl	8000b3c <QSPI_setupIndirect>
+	nvic_setup(); //set interrupts and their priorities
+ 80007a2:	f000 f987 	bl	8000ab4 <nvic_setup>
+
+}
+ 80007a6:	bf00      	nop
+ 80007a8:	bd80      	pop	{r7, pc}
+ 80007aa:	bf00      	nop
+ 80007ac:	0cdfe600 	.word	0x0cdfe600
+ 80007b0:	40026400 	.word	0x40026400
+ 80007b4:	40026000 	.word	0x40026000
+ 80007b8:	40011000 	.word	0x40011000
+
+080007bc <printQspiFlashConfigs>:
+
+void printQspiFlashConfigs(void) {
+ 80007bc:	b5b0      	push	{r4, r5, r7, lr}
+ 80007be:	b09e      	sub	sp, #120	; 0x78
+ 80007c0:	af00      	add	r7, sp, #0
+	 * Read volatile configuration register
+	 * Send it over UART
+	 *
+	 * */
+	uint8_t registerContent;
+	QSPI_readRegister(MT25QL128ABA1EW9_COMMAND_READ_VOLATILE_CONFIGURATION_REGISTER, QIO_QUAD, &registerContent);
+ 80007c2:	f107 0377 	add.w	r3, r7, #119	; 0x77
+ 80007c6:	461a      	mov	r2, r3
+ 80007c8:	2103      	movs	r1, #3
+ 80007ca:	2085      	movs	r0, #133	; 0x85
+ 80007cc:	f000 f9fe 	bl	8000bcc <QSPI_readRegister>
+	char configurationRegisterString[] = "Configuration register: ";
+ 80007d0:	4b80      	ldr	r3, [pc, #512]	; (80009d4 <printQspiFlashConfigs+0x218>)
+ 80007d2:	f107 045c 	add.w	r4, r7, #92	; 0x5c
+ 80007d6:	461d      	mov	r5, r3
+ 80007d8:	cd0f      	ldmia	r5!, {r0, r1, r2, r3}
+ 80007da:	c40f      	stmia	r4!, {r0, r1, r2, r3}
+ 80007dc:	e895 0007 	ldmia.w	r5, {r0, r1, r2}
+ 80007e0:	c403      	stmia	r4!, {r0, r1}
+ 80007e2:	7022      	strb	r2, [r4, #0]
+	uint8_t registerValue[6];
+	registerValue[0] = (uint8_t) '0';
+ 80007e4:	2330      	movs	r3, #48	; 0x30
+ 80007e6:	f887 3054 	strb.w	r3, [r7, #84]	; 0x54
+	registerValue[1] = (uint8_t) 'x';
+ 80007ea:	2378      	movs	r3, #120	; 0x78
+ 80007ec:	f887 3055 	strb.w	r3, [r7, #85]	; 0x55
+	registerValue[2] = (uint8_t) upperNibbleToAscii(registerContent);
+ 80007f0:	f897 3077 	ldrb.w	r3, [r7, #119]	; 0x77
+ 80007f4:	4618      	mov	r0, r3
+ 80007f6:	f7ff fd1f 	bl	8000238 <upperNibbleToAscii>
+ 80007fa:	4603      	mov	r3, r0
+ 80007fc:	f887 3056 	strb.w	r3, [r7, #86]	; 0x56
+	registerValue[3] = (uint8_t) lowerNibbleToAscii(registerContent);
+ 8000800:	f897 3077 	ldrb.w	r3, [r7, #119]	; 0x77
+ 8000804:	4618      	mov	r0, r3
+ 8000806:	f7ff fd2f 	bl	8000268 <lowerNibbleToAscii>
+ 800080a:	4603      	mov	r3, r0
+ 800080c:	f887 3057 	strb.w	r3, [r7, #87]	; 0x57
+	registerValue[4] = '\r';
+ 8000810:	230d      	movs	r3, #13
+ 8000812:	f887 3058 	strb.w	r3, [r7, #88]	; 0x58
+	registerValue[5] = '\n';
+ 8000816:	230a      	movs	r3, #10
+ 8000818:	f887 3059 	strb.w	r3, [r7, #89]	; 0x59
+	usart_dma_sendArray(USART1, (uint8_t*) configurationRegisterString, sizeof(configurationRegisterString));
+ 800081c:	f107 035c 	add.w	r3, r7, #92	; 0x5c
+ 8000820:	2219      	movs	r2, #25
+ 8000822:	4619      	mov	r1, r3
+ 8000824:	486c      	ldr	r0, [pc, #432]	; (80009d8 <printQspiFlashConfigs+0x21c>)
+ 8000826:	f000 fdf7 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100);
+ 800082a:	2064      	movs	r0, #100	; 0x64
+ 800082c:	f000 fd3e 	bl	80012ac <system_msdelay>
+	usart_dma_sendArray(USART1, (uint8_t*) registerValue, sizeof(registerValue));
+ 8000830:	f107 0354 	add.w	r3, r7, #84	; 0x54
+ 8000834:	2206      	movs	r2, #6
+ 8000836:	4619      	mov	r1, r3
+ 8000838:	4867      	ldr	r0, [pc, #412]	; (80009d8 <printQspiFlashConfigs+0x21c>)
+ 800083a:	f000 fded 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100);
+ 800083e:	2064      	movs	r0, #100	; 0x64
+ 8000840:	f000 fd34 	bl	80012ac <system_msdelay>
+	 * Read enhanced volatile configuration register
+	 * Send it over UART
+	 *
+	 * */
+
+	QSPI_readRegister(MT25QL128ABA1EW9_COMMAND_READ_ENHANCED_VOLATILE_CONFIGURATION_REGISTER, QIO_QUAD, &registerContent);
+ 8000844:	f107 0377 	add.w	r3, r7, #119	; 0x77
+ 8000848:	461a      	mov	r2, r3
+ 800084a:	2103      	movs	r1, #3
+ 800084c:	2065      	movs	r0, #101	; 0x65
+ 800084e:	f000 f9bd 	bl	8000bcc <QSPI_readRegister>
+	char enhancedConfigurationRegisterString[] = "Enhanced configuration register: ";
+ 8000852:	4b62      	ldr	r3, [pc, #392]	; (80009dc <printQspiFlashConfigs+0x220>)
+ 8000854:	f107 0430 	add.w	r4, r7, #48	; 0x30
+ 8000858:	461d      	mov	r5, r3
+ 800085a:	cd0f      	ldmia	r5!, {r0, r1, r2, r3}
+ 800085c:	c40f      	stmia	r4!, {r0, r1, r2, r3}
+ 800085e:	cd0f      	ldmia	r5!, {r0, r1, r2, r3}
+ 8000860:	c40f      	stmia	r4!, {r0, r1, r2, r3}
+ 8000862:	682b      	ldr	r3, [r5, #0]
+ 8000864:	8023      	strh	r3, [r4, #0]
+	registerValue[0] = (uint8_t) '0';
+ 8000866:	2330      	movs	r3, #48	; 0x30
+ 8000868:	f887 3054 	strb.w	r3, [r7, #84]	; 0x54
+	registerValue[1] = (uint8_t) 'x';
+ 800086c:	2378      	movs	r3, #120	; 0x78
+ 800086e:	f887 3055 	strb.w	r3, [r7, #85]	; 0x55
+	registerValue[2] = (uint8_t) upperNibbleToAscii(registerContent);
+ 8000872:	f897 3077 	ldrb.w	r3, [r7, #119]	; 0x77
+ 8000876:	4618      	mov	r0, r3
+ 8000878:	f7ff fcde 	bl	8000238 <upperNibbleToAscii>
+ 800087c:	4603      	mov	r3, r0
+ 800087e:	f887 3056 	strb.w	r3, [r7, #86]	; 0x56
+	registerValue[3] = (uint8_t) lowerNibbleToAscii(registerContent);
+ 8000882:	f897 3077 	ldrb.w	r3, [r7, #119]	; 0x77
+ 8000886:	4618      	mov	r0, r3
+ 8000888:	f7ff fcee 	bl	8000268 <lowerNibbleToAscii>
+ 800088c:	4603      	mov	r3, r0
+ 800088e:	f887 3057 	strb.w	r3, [r7, #87]	; 0x57
+	registerValue[4] = '\r';
+ 8000892:	230d      	movs	r3, #13
+ 8000894:	f887 3058 	strb.w	r3, [r7, #88]	; 0x58
+	registerValue[5] = '\n';
+ 8000898:	230a      	movs	r3, #10
+ 800089a:	f887 3059 	strb.w	r3, [r7, #89]	; 0x59
+	usart_dma_sendArray(USART1, (uint8_t*) enhancedConfigurationRegisterString, sizeof(enhancedConfigurationRegisterString));
+ 800089e:	f107 0330 	add.w	r3, r7, #48	; 0x30
+ 80008a2:	2222      	movs	r2, #34	; 0x22
+ 80008a4:	4619      	mov	r1, r3
+ 80008a6:	484c      	ldr	r0, [pc, #304]	; (80009d8 <printQspiFlashConfigs+0x21c>)
+ 80008a8:	f000 fdb6 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100);
+ 80008ac:	2064      	movs	r0, #100	; 0x64
+ 80008ae:	f000 fcfd 	bl	80012ac <system_msdelay>
+	usart_dma_sendArray(USART1, (uint8_t*) registerValue, sizeof(registerValue));
+ 80008b2:	f107 0354 	add.w	r3, r7, #84	; 0x54
+ 80008b6:	2206      	movs	r2, #6
+ 80008b8:	4619      	mov	r1, r3
+ 80008ba:	4847      	ldr	r0, [pc, #284]	; (80009d8 <printQspiFlashConfigs+0x21c>)
+ 80008bc:	f000 fdac 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100);
+ 80008c0:	2064      	movs	r0, #100	; 0x64
+ 80008c2:	f000 fcf3 	bl	80012ac <system_msdelay>
+	 * Read status register
+	 * Send it over UART
+	 *
+	 * */
+
+	QSPI_readRegister(MT25QL128ABA1EW9_COMMAND_READ_STATUS_REGISTER, QIO_QUAD, &registerContent);
+ 80008c6:	f107 0377 	add.w	r3, r7, #119	; 0x77
+ 80008ca:	461a      	mov	r2, r3
+ 80008cc:	2103      	movs	r1, #3
+ 80008ce:	2005      	movs	r0, #5
+ 80008d0:	f000 f97c 	bl	8000bcc <QSPI_readRegister>
+	char statusRegisterString[] = "Status register: ";
+ 80008d4:	4b42      	ldr	r3, [pc, #264]	; (80009e0 <printQspiFlashConfigs+0x224>)
+ 80008d6:	f107 041c 	add.w	r4, r7, #28
+ 80008da:	461d      	mov	r5, r3
+ 80008dc:	cd0f      	ldmia	r5!, {r0, r1, r2, r3}
+ 80008de:	c40f      	stmia	r4!, {r0, r1, r2, r3}
+ 80008e0:	682b      	ldr	r3, [r5, #0]
+ 80008e2:	8023      	strh	r3, [r4, #0]
+	registerValue[0] = (uint8_t) '0';
+ 80008e4:	2330      	movs	r3, #48	; 0x30
+ 80008e6:	f887 3054 	strb.w	r3, [r7, #84]	; 0x54
+	registerValue[1] = (uint8_t) 'x';
+ 80008ea:	2378      	movs	r3, #120	; 0x78
+ 80008ec:	f887 3055 	strb.w	r3, [r7, #85]	; 0x55
+	registerValue[2] = (uint8_t) upperNibbleToAscii(registerContent);
+ 80008f0:	f897 3077 	ldrb.w	r3, [r7, #119]	; 0x77
+ 80008f4:	4618      	mov	r0, r3
+ 80008f6:	f7ff fc9f 	bl	8000238 <upperNibbleToAscii>
+ 80008fa:	4603      	mov	r3, r0
+ 80008fc:	f887 3056 	strb.w	r3, [r7, #86]	; 0x56
+	registerValue[3] = (uint8_t) lowerNibbleToAscii(registerContent);
+ 8000900:	f897 3077 	ldrb.w	r3, [r7, #119]	; 0x77
+ 8000904:	4618      	mov	r0, r3
+ 8000906:	f7ff fcaf 	bl	8000268 <lowerNibbleToAscii>
+ 800090a:	4603      	mov	r3, r0
+ 800090c:	f887 3057 	strb.w	r3, [r7, #87]	; 0x57
+	registerValue[4] = '\r';
+ 8000910:	230d      	movs	r3, #13
+ 8000912:	f887 3058 	strb.w	r3, [r7, #88]	; 0x58
+	registerValue[5] = '\n';
+ 8000916:	230a      	movs	r3, #10
+ 8000918:	f887 3059 	strb.w	r3, [r7, #89]	; 0x59
+	usart_dma_sendArray(USART1, (uint8_t*) statusRegisterString, sizeof(statusRegisterString));
+ 800091c:	f107 031c 	add.w	r3, r7, #28
+ 8000920:	2212      	movs	r2, #18
+ 8000922:	4619      	mov	r1, r3
+ 8000924:	482c      	ldr	r0, [pc, #176]	; (80009d8 <printQspiFlashConfigs+0x21c>)
+ 8000926:	f000 fd77 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100);
+ 800092a:	2064      	movs	r0, #100	; 0x64
+ 800092c:	f000 fcbe 	bl	80012ac <system_msdelay>
+	usart_dma_sendArray(USART1, (uint8_t*) registerValue, sizeof(registerValue));
+ 8000930:	f107 0354 	add.w	r3, r7, #84	; 0x54
+ 8000934:	2206      	movs	r2, #6
+ 8000936:	4619      	mov	r1, r3
+ 8000938:	4827      	ldr	r0, [pc, #156]	; (80009d8 <printQspiFlashConfigs+0x21c>)
+ 800093a:	f000 fd6d 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100);
+ 800093e:	2064      	movs	r0, #100	; 0x64
+ 8000940:	f000 fcb4 	bl	80012ac <system_msdelay>
+	 * Read flag status register
+	 * Send it over UART
+	 *
+	 * */
+
+	QSPI_readRegister(MT25QL128ABA1EW9_COMMAND_READ_FLAG_STATUS_REGISTER, QIO_QUAD, &registerContent);
+ 8000944:	f107 0377 	add.w	r3, r7, #119	; 0x77
+ 8000948:	461a      	mov	r2, r3
+ 800094a:	2103      	movs	r1, #3
+ 800094c:	2070      	movs	r0, #112	; 0x70
+ 800094e:	f000 f93d 	bl	8000bcc <QSPI_readRegister>
+	char flagStatusRegisterString[] = "Flag status register: ";
+ 8000952:	4b24      	ldr	r3, [pc, #144]	; (80009e4 <printQspiFlashConfigs+0x228>)
+ 8000954:	1d3c      	adds	r4, r7, #4
+ 8000956:	461d      	mov	r5, r3
+ 8000958:	cd0f      	ldmia	r5!, {r0, r1, r2, r3}
+ 800095a:	c40f      	stmia	r4!, {r0, r1, r2, r3}
+ 800095c:	e895 0003 	ldmia.w	r5, {r0, r1}
+ 8000960:	6020      	str	r0, [r4, #0]
+ 8000962:	3404      	adds	r4, #4
+ 8000964:	8021      	strh	r1, [r4, #0]
+ 8000966:	3402      	adds	r4, #2
+ 8000968:	0c0b      	lsrs	r3, r1, #16
+ 800096a:	7023      	strb	r3, [r4, #0]
+	registerValue[0] = (uint8_t) '0';
+ 800096c:	2330      	movs	r3, #48	; 0x30
+ 800096e:	f887 3054 	strb.w	r3, [r7, #84]	; 0x54
+	registerValue[1] = (uint8_t) 'x';
+ 8000972:	2378      	movs	r3, #120	; 0x78
+ 8000974:	f887 3055 	strb.w	r3, [r7, #85]	; 0x55
+	registerValue[2] = (uint8_t) upperNibbleToAscii(registerContent);
+ 8000978:	f897 3077 	ldrb.w	r3, [r7, #119]	; 0x77
+ 800097c:	4618      	mov	r0, r3
+ 800097e:	f7ff fc5b 	bl	8000238 <upperNibbleToAscii>
+ 8000982:	4603      	mov	r3, r0
+ 8000984:	f887 3056 	strb.w	r3, [r7, #86]	; 0x56
+	registerValue[3] = (uint8_t) lowerNibbleToAscii(registerContent);
+ 8000988:	f897 3077 	ldrb.w	r3, [r7, #119]	; 0x77
+ 800098c:	4618      	mov	r0, r3
+ 800098e:	f7ff fc6b 	bl	8000268 <lowerNibbleToAscii>
+ 8000992:	4603      	mov	r3, r0
+ 8000994:	f887 3057 	strb.w	r3, [r7, #87]	; 0x57
+	registerValue[4] = '\r';
+ 8000998:	230d      	movs	r3, #13
+ 800099a:	f887 3058 	strb.w	r3, [r7, #88]	; 0x58
+	registerValue[5] = '\n';
+ 800099e:	230a      	movs	r3, #10
+ 80009a0:	f887 3059 	strb.w	r3, [r7, #89]	; 0x59
+	usart_dma_sendArray(USART1, (uint8_t*) flagStatusRegisterString, sizeof(flagStatusRegisterString));
+ 80009a4:	1d3b      	adds	r3, r7, #4
+ 80009a6:	2217      	movs	r2, #23
+ 80009a8:	4619      	mov	r1, r3
+ 80009aa:	480b      	ldr	r0, [pc, #44]	; (80009d8 <printQspiFlashConfigs+0x21c>)
+ 80009ac:	f000 fd34 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100);
+ 80009b0:	2064      	movs	r0, #100	; 0x64
+ 80009b2:	f000 fc7b 	bl	80012ac <system_msdelay>
+	usart_dma_sendArray(USART1, (uint8_t*) registerValue, sizeof(registerValue));
+ 80009b6:	f107 0354 	add.w	r3, r7, #84	; 0x54
+ 80009ba:	2206      	movs	r2, #6
+ 80009bc:	4619      	mov	r1, r3
+ 80009be:	4806      	ldr	r0, [pc, #24]	; (80009d8 <printQspiFlashConfigs+0x21c>)
+ 80009c0:	f000 fd2a 	bl	8001418 <usart_dma_sendArray>
+	system_msdelay(100);
+ 80009c4:	2064      	movs	r0, #100	; 0x64
+ 80009c6:	f000 fc71 	bl	80012ac <system_msdelay>
+}
+ 80009ca:	bf00      	nop
+ 80009cc:	3778      	adds	r7, #120	; 0x78
+ 80009ce:	46bd      	mov	sp, r7
+ 80009d0:	bdb0      	pop	{r4, r5, r7, pc}
+ 80009d2:	bf00      	nop
+ 80009d4:	0800156c 	.word	0x0800156c
+ 80009d8:	40011000 	.word	0x40011000
+ 80009dc:	08001588 	.word	0x08001588
+ 80009e0:	080015ac 	.word	0x080015ac
+ 80009e4:	080015c0 	.word	0x080015c0
+
+080009e8 <__NVIC_EnableIRQ>:
+  \details Enables a device specific interrupt in the NVIC interrupt controller.
+  \param [in]      IRQn  Device specific interrupt number.
+  \note    IRQn must not be negative.
+ */
+__STATIC_INLINE void __NVIC_EnableIRQ(IRQn_Type IRQn)
+{
+ 80009e8:	b480      	push	{r7}
+ 80009ea:	b083      	sub	sp, #12
+ 80009ec:	af00      	add	r7, sp, #0
+ 80009ee:	4603      	mov	r3, r0
+ 80009f0:	71fb      	strb	r3, [r7, #7]
+  if ((int32_t)(IRQn) >= 0)
+ 80009f2:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 80009f6:	2b00      	cmp	r3, #0
+ 80009f8:	db0b      	blt.n	8000a12 <__NVIC_EnableIRQ+0x2a>
+  {
+    NVIC->ISER[(((uint32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)IRQn) & 0x1FUL));
+ 80009fa:	79fb      	ldrb	r3, [r7, #7]
+ 80009fc:	f003 021f 	and.w	r2, r3, #31
+ 8000a00:	4907      	ldr	r1, [pc, #28]	; (8000a20 <__NVIC_EnableIRQ+0x38>)
+ 8000a02:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000a06:	095b      	lsrs	r3, r3, #5
+ 8000a08:	2001      	movs	r0, #1
+ 8000a0a:	fa00 f202 	lsl.w	r2, r0, r2
+ 8000a0e:	f841 2023 	str.w	r2, [r1, r3, lsl #2]
+  }
+}
+ 8000a12:	bf00      	nop
+ 8000a14:	370c      	adds	r7, #12
+ 8000a16:	46bd      	mov	sp, r7
+ 8000a18:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000a1c:	4770      	bx	lr
+ 8000a1e:	bf00      	nop
+ 8000a20:	e000e100 	.word	0xe000e100
+
+08000a24 <__NVIC_ClearPendingIRQ>:
+  \details Clears the pending bit of a device specific interrupt in the NVIC pending register.
+  \param [in]      IRQn  Device specific interrupt number.
+  \note    IRQn must not be negative.
+ */
+__STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
+{
+ 8000a24:	b480      	push	{r7}
+ 8000a26:	b083      	sub	sp, #12
+ 8000a28:	af00      	add	r7, sp, #0
+ 8000a2a:	4603      	mov	r3, r0
+ 8000a2c:	71fb      	strb	r3, [r7, #7]
+  if ((int32_t)(IRQn) >= 0)
+ 8000a2e:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000a32:	2b00      	cmp	r3, #0
+ 8000a34:	db0c      	blt.n	8000a50 <__NVIC_ClearPendingIRQ+0x2c>
+  {
+    NVIC->ICPR[(((uint32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)IRQn) & 0x1FUL));
+ 8000a36:	79fb      	ldrb	r3, [r7, #7]
+ 8000a38:	f003 021f 	and.w	r2, r3, #31
+ 8000a3c:	4907      	ldr	r1, [pc, #28]	; (8000a5c <__NVIC_ClearPendingIRQ+0x38>)
+ 8000a3e:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000a42:	095b      	lsrs	r3, r3, #5
+ 8000a44:	2001      	movs	r0, #1
+ 8000a46:	fa00 f202 	lsl.w	r2, r0, r2
+ 8000a4a:	3360      	adds	r3, #96	; 0x60
+ 8000a4c:	f841 2023 	str.w	r2, [r1, r3, lsl #2]
+  }
+}
+ 8000a50:	bf00      	nop
+ 8000a52:	370c      	adds	r7, #12
+ 8000a54:	46bd      	mov	sp, r7
+ 8000a56:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000a5a:	4770      	bx	lr
+ 8000a5c:	e000e100 	.word	0xe000e100
+
+08000a60 <__NVIC_SetPriority>:
+  \param [in]      IRQn  Interrupt number.
+  \param [in]  priority  Priority to set.
+  \note    The priority cannot be set for every processor exception.
+ */
+__STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
+{
+ 8000a60:	b480      	push	{r7}
+ 8000a62:	b083      	sub	sp, #12
+ 8000a64:	af00      	add	r7, sp, #0
+ 8000a66:	4603      	mov	r3, r0
+ 8000a68:	6039      	str	r1, [r7, #0]
+ 8000a6a:	71fb      	strb	r3, [r7, #7]
+  if ((int32_t)(IRQn) >= 0)
+ 8000a6c:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000a70:	2b00      	cmp	r3, #0
+ 8000a72:	db0a      	blt.n	8000a8a <__NVIC_SetPriority+0x2a>
+  {
+    NVIC->IP[((uint32_t)IRQn)]                = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+ 8000a74:	683b      	ldr	r3, [r7, #0]
+ 8000a76:	b2da      	uxtb	r2, r3
+ 8000a78:	490c      	ldr	r1, [pc, #48]	; (8000aac <__NVIC_SetPriority+0x4c>)
+ 8000a7a:	f997 3007 	ldrsb.w	r3, [r7, #7]
+ 8000a7e:	0112      	lsls	r2, r2, #4
+ 8000a80:	b2d2      	uxtb	r2, r2
+ 8000a82:	440b      	add	r3, r1
+ 8000a84:	f883 2300 	strb.w	r2, [r3, #768]	; 0x300
+  }
+  else
+  {
+    SCB->SHPR[(((uint32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+  }
+}
+ 8000a88:	e00a      	b.n	8000aa0 <__NVIC_SetPriority+0x40>
+    SCB->SHPR[(((uint32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
+ 8000a8a:	683b      	ldr	r3, [r7, #0]
+ 8000a8c:	b2da      	uxtb	r2, r3
+ 8000a8e:	4908      	ldr	r1, [pc, #32]	; (8000ab0 <__NVIC_SetPriority+0x50>)
+ 8000a90:	79fb      	ldrb	r3, [r7, #7]
+ 8000a92:	f003 030f 	and.w	r3, r3, #15
+ 8000a96:	3b04      	subs	r3, #4
+ 8000a98:	0112      	lsls	r2, r2, #4
+ 8000a9a:	b2d2      	uxtb	r2, r2
+ 8000a9c:	440b      	add	r3, r1
+ 8000a9e:	761a      	strb	r2, [r3, #24]
+}
+ 8000aa0:	bf00      	nop
+ 8000aa2:	370c      	adds	r7, #12
+ 8000aa4:	46bd      	mov	sp, r7
+ 8000aa6:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000aaa:	4770      	bx	lr
+ 8000aac:	e000e100 	.word	0xe000e100
+ 8000ab0:	e000ed00 	.word	0xe000ed00
+
+08000ab4 <nvic_setup>:
+#include "nvic.h"
+
+void nvic_setup(void) {
+ 8000ab4:	b580      	push	{r7, lr}
+ 8000ab6:	af00      	add	r7, sp, #0
+
+	NVIC_SetPriority(DMA2_Stream2_IRQn, 16U);
+ 8000ab8:	2110      	movs	r1, #16
+ 8000aba:	203a      	movs	r0, #58	; 0x3a
+ 8000abc:	f7ff ffd0 	bl	8000a60 <__NVIC_SetPriority>
+	NVIC_ClearPendingIRQ(DMA2_Stream2_IRQn);
+ 8000ac0:	203a      	movs	r0, #58	; 0x3a
+ 8000ac2:	f7ff ffaf 	bl	8000a24 <__NVIC_ClearPendingIRQ>
+	NVIC_EnableIRQ(DMA2_Stream2_IRQn);
+ 8000ac6:	203a      	movs	r0, #58	; 0x3a
+ 8000ac8:	f7ff ff8e 	bl	80009e8 <__NVIC_EnableIRQ>
+
+	NVIC_SetPriority(DMA2_Stream7_IRQn, 16U);
+ 8000acc:	2110      	movs	r1, #16
+ 8000ace:	2046      	movs	r0, #70	; 0x46
+ 8000ad0:	f7ff ffc6 	bl	8000a60 <__NVIC_SetPriority>
+	NVIC_ClearPendingIRQ(DMA2_Stream7_IRQn);
+ 8000ad4:	2046      	movs	r0, #70	; 0x46
+ 8000ad6:	f7ff ffa5 	bl	8000a24 <__NVIC_ClearPendingIRQ>
+	NVIC_EnableIRQ(DMA2_Stream7_IRQn);
+ 8000ada:	2046      	movs	r0, #70	; 0x46
+ 8000adc:	f7ff ff84 	bl	80009e8 <__NVIC_EnableIRQ>
+
+}
+ 8000ae0:	bf00      	nop
+ 8000ae2:	bd80      	pop	{r7, pc}
+
+08000ae4 <DMA2_Stream2_IRQHandler>:
+
+void DMA2_Stream2_IRQHandler(void) {
+ 8000ae4:	b480      	push	{r7}
+ 8000ae6:	af00      	add	r7, sp, #0
+	if (DMA2->LISR & DMA_LISR_TCIF2) { //If stream 2 transfer complete (USART RX)
+ 8000ae8:	4b08      	ldr	r3, [pc, #32]	; (8000b0c <DMA2_Stream2_IRQHandler+0x28>)
+ 8000aea:	681b      	ldr	r3, [r3, #0]
+ 8000aec:	f403 1300 	and.w	r3, r3, #2097152	; 0x200000
+ 8000af0:	2b00      	cmp	r3, #0
+ 8000af2:	d005      	beq.n	8000b00 <DMA2_Stream2_IRQHandler+0x1c>
+		DMA2->LIFCR |= DMA_LIFCR_CTCIF2; //clear flag
+ 8000af4:	4b05      	ldr	r3, [pc, #20]	; (8000b0c <DMA2_Stream2_IRQHandler+0x28>)
+ 8000af6:	689b      	ldr	r3, [r3, #8]
+ 8000af8:	4a04      	ldr	r2, [pc, #16]	; (8000b0c <DMA2_Stream2_IRQHandler+0x28>)
+ 8000afa:	f443 1300 	orr.w	r3, r3, #2097152	; 0x200000
+ 8000afe:	6093      	str	r3, [r2, #8]
+	}
+}
+ 8000b00:	bf00      	nop
+ 8000b02:	46bd      	mov	sp, r7
+ 8000b04:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000b08:	4770      	bx	lr
+ 8000b0a:	bf00      	nop
+ 8000b0c:	40026400 	.word	0x40026400
+
+08000b10 <DMA2_Stream7_IRQHandler>:
+
+void DMA2_Stream7_IRQHandler(void) {
+ 8000b10:	b480      	push	{r7}
+ 8000b12:	af00      	add	r7, sp, #0
+	if (DMA2->HISR & DMA_HISR_TCIF7) { //If stream 7 transfer complete (USART TX)
+ 8000b14:	4b08      	ldr	r3, [pc, #32]	; (8000b38 <DMA2_Stream7_IRQHandler+0x28>)
+ 8000b16:	685b      	ldr	r3, [r3, #4]
+ 8000b18:	f003 6300 	and.w	r3, r3, #134217728	; 0x8000000
+ 8000b1c:	2b00      	cmp	r3, #0
+ 8000b1e:	d005      	beq.n	8000b2c <DMA2_Stream7_IRQHandler+0x1c>
+		DMA2->HIFCR |= DMA_HIFCR_CTCIF7; //clear flag
+ 8000b20:	4b05      	ldr	r3, [pc, #20]	; (8000b38 <DMA2_Stream7_IRQHandler+0x28>)
+ 8000b22:	68db      	ldr	r3, [r3, #12]
+ 8000b24:	4a04      	ldr	r2, [pc, #16]	; (8000b38 <DMA2_Stream7_IRQHandler+0x28>)
+ 8000b26:	f043 6300 	orr.w	r3, r3, #134217728	; 0x8000000
+ 8000b2a:	60d3      	str	r3, [r2, #12]
+	}
+}
+ 8000b2c:	bf00      	nop
+ 8000b2e:	46bd      	mov	sp, r7
+ 8000b30:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000b34:	4770      	bx	lr
+ 8000b36:	bf00      	nop
+ 8000b38:	40026400 	.word	0x40026400
+
+08000b3c <QSPI_setupIndirect>:
+#include "qspi.h"
+
+/*
+ * This function sets up QUADSPI in SDR mode with prescaler of 2
+ */
+void QSPI_setupIndirect(void) {
+ 8000b3c:	b580      	push	{r7, lr}
+ 8000b3e:	af00      	add	r7, sp, #0
+
+	/* ------------ QSPI Initialization --------------- */
+
+	QUADSPI->CR &= ~(QUADSPI_CR_EN); //Make sure QUADSPI is disabled
+ 8000b40:	4b1f      	ldr	r3, [pc, #124]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b42:	681b      	ldr	r3, [r3, #0]
+ 8000b44:	4a1e      	ldr	r2, [pc, #120]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b46:	f023 0301 	bic.w	r3, r3, #1
+ 8000b4a:	6013      	str	r3, [r2, #0]
+	QUADSPI->DCR = 0x00; //reset
+ 8000b4c:	4b1c      	ldr	r3, [pc, #112]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b4e:	2200      	movs	r2, #0
+ 8000b50:	605a      	str	r2, [r3, #4]
+	QUADSPI->CCR = 0x00; //reset
+ 8000b52:	4b1b      	ldr	r3, [pc, #108]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b54:	2200      	movs	r2, #0
+ 8000b56:	615a      	str	r2, [r3, #20]
+	QUADSPI->DCR |= ((24U - 1U) << QUADSPI_DCR_FSIZE_Pos) | ((6U - 1U) << QUADSPI_DCR_CSHT_Pos); //Flash size 128Mb=16MB=2^24 bytes; Chip Select High Time 6 cycles
+ 8000b58:	4b19      	ldr	r3, [pc, #100]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b5a:	685a      	ldr	r2, [r3, #4]
+ 8000b5c:	4918      	ldr	r1, [pc, #96]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b5e:	4b19      	ldr	r3, [pc, #100]	; (8000bc4 <QSPI_setupIndirect+0x88>)
+ 8000b60:	4313      	orrs	r3, r2
+ 8000b62:	604b      	str	r3, [r1, #4]
+	QUADSPI->CR = 0x00; //reset
+ 8000b64:	4b16      	ldr	r3, [pc, #88]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b66:	2200      	movs	r2, #0
+ 8000b68:	601a      	str	r2, [r3, #0]
+	QUADSPI->CR |= (QUADSPI_CR_SSHIFT | ((2U - 1U) << QUADSPI_CR_PRESCALER_Pos)); //Sample shift 1/2 clock cycle; Prescaler = 2 (216MHz/2 = 108MHz)
+ 8000b6a:	4b15      	ldr	r3, [pc, #84]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b6c:	681a      	ldr	r2, [r3, #0]
+ 8000b6e:	4914      	ldr	r1, [pc, #80]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b70:	4b15      	ldr	r3, [pc, #84]	; (8000bc8 <QSPI_setupIndirect+0x8c>)
+ 8000b72:	4313      	orrs	r3, r2
+ 8000b74:	600b      	str	r3, [r1, #0]
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; //Clear all flags
+ 8000b76:	4b12      	ldr	r3, [pc, #72]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b78:	221b      	movs	r2, #27
+ 8000b7a:	60da      	str	r2, [r3, #12]
+	QUADSPI->CR |= (QUADSPI_CR_EN); //Enable peripheral
+ 8000b7c:	4b10      	ldr	r3, [pc, #64]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b7e:	681b      	ldr	r3, [r3, #0]
+ 8000b80:	4a0f      	ldr	r2, [pc, #60]	; (8000bc0 <QSPI_setupIndirect+0x84>)
+ 8000b82:	f043 0301 	orr.w	r3, r3, #1
+ 8000b86:	6013      	str	r3, [r2, #0]
+
+	/* ---------- QSPI Flash Setup ---------- */
+
+	QSPI_indirectWriteInstruction(MT25QL128ABA1EW9_COMMAND_RESET_ENABLE, QIO_SINGLE); //Enable reset
+ 8000b88:	2101      	movs	r1, #1
+ 8000b8a:	2066      	movs	r0, #102	; 0x66
+ 8000b8c:	f000 f864 	bl	8000c58 <QSPI_indirectWriteInstruction>
+	QSPI_indirectWriteInstruction(MT25QL128ABA1EW9_COMMAND_RESET_MEMORY, QIO_SINGLE); //Reset QSPI Flash. If MCU was reset, but the QSPI Flash wasn't power cycled, it will retain old config
+ 8000b90:	2101      	movs	r1, #1
+ 8000b92:	2099      	movs	r0, #153	; 0x99
+ 8000b94:	f000 f860 	bl	8000c58 <QSPI_indirectWriteInstruction>
+
+	QSPI_indirectWriteInstruction(MT25QL128ABA1EW9_COMMAND_WRITE_ENABLE, QIO_SINGLE); //Enable write to register
+ 8000b98:	2101      	movs	r1, #1
+ 8000b9a:	2006      	movs	r0, #6
+ 8000b9c:	f000 f85c 	bl	8000c58 <QSPI_indirectWriteInstruction>
+	QSPI_indirectWriteRegister(MT25QL128ABA1EW9_COMMAND_WRITE_VOLATILE_CONFIGURATION_REGISTER, QIO_SINGLE, ((0x06 << 4U) | 0xB)); //Set 6 dummy cycles. Quad output fast read only! Quad io fast read needs 9 dummies
+ 8000ba0:	226b      	movs	r2, #107	; 0x6b
+ 8000ba2:	2101      	movs	r1, #1
+ 8000ba4:	2081      	movs	r0, #129	; 0x81
+ 8000ba6:	f000 f881 	bl	8000cac <QSPI_indirectWriteRegister>
+
+	QSPI_indirectWriteInstruction(MT25QL128ABA1EW9_COMMAND_WRITE_ENABLE, QIO_SINGLE); //Enable write to register
+ 8000baa:	2101      	movs	r1, #1
+ 8000bac:	2006      	movs	r0, #6
+ 8000bae:	f000 f853 	bl	8000c58 <QSPI_indirectWriteInstruction>
+	QSPI_indirectWriteRegister(MT25QL128ABA1EW9_COMMAND_WRITE_ENHANCED_VOLATILE_CONFIGURATION_REGISTER, QIO_SINGLE, 0x6F); //Enable QUAD IO, disable reset/hold
+ 8000bb2:	226f      	movs	r2, #111	; 0x6f
+ 8000bb4:	2101      	movs	r1, #1
+ 8000bb6:	2061      	movs	r0, #97	; 0x61
+ 8000bb8:	f000 f878 	bl	8000cac <QSPI_indirectWriteRegister>
+
+	/* ---------- End of QSPI Flash Setup ---------- */
+}
+ 8000bbc:	bf00      	nop
+ 8000bbe:	bd80      	pop	{r7, pc}
+ 8000bc0:	a0001000 	.word	0xa0001000
+ 8000bc4:	00170500 	.word	0x00170500
+ 8000bc8:	01000010 	.word	0x01000010
+
+08000bcc <QSPI_readRegister>:
+ * @param		dataLinesMode	0x01 = 1 data line
+ * 								0x02 = 2 data lines
+ * 								0x03 = 4 data lines
+ * @param		destination		address of byte to store register content
+ * */
+void QSPI_readRegister(uint8_t instruction, uint8_t dataLinesMode, uint8_t *destination) {
+ 8000bcc:	b480      	push	{r7}
+ 8000bce:	b083      	sub	sp, #12
+ 8000bd0:	af00      	add	r7, sp, #0
+ 8000bd2:	4603      	mov	r3, r0
+ 8000bd4:	603a      	str	r2, [r7, #0]
+ 8000bd6:	71fb      	strb	r3, [r7, #7]
+ 8000bd8:	460b      	mov	r3, r1
+ 8000bda:	71bb      	strb	r3, [r7, #6]
+
+	while (QUADSPI->SR & QUADSPI_SR_BUSY); //Make sure no operation is going on
+ 8000bdc:	bf00      	nop
+ 8000bde:	4b1c      	ldr	r3, [pc, #112]	; (8000c50 <QSPI_readRegister+0x84>)
+ 8000be0:	689b      	ldr	r3, [r3, #8]
+ 8000be2:	f003 0320 	and.w	r3, r3, #32
+ 8000be6:	2b00      	cmp	r3, #0
+ 8000be8:	d1f9      	bne.n	8000bde <QSPI_readRegister+0x12>
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; //Clear all flags
+ 8000bea:	4b19      	ldr	r3, [pc, #100]	; (8000c50 <QSPI_readRegister+0x84>)
+ 8000bec:	221b      	movs	r2, #27
+ 8000bee:	60da      	str	r2, [r3, #12]
+	QUADSPI->DLR = 1U - 1U; //Set data length to 1
+ 8000bf0:	4b17      	ldr	r3, [pc, #92]	; (8000c50 <QSPI_readRegister+0x84>)
+ 8000bf2:	2200      	movs	r2, #0
+ 8000bf4:	611a      	str	r2, [r3, #16]
+	QUADSPI->CR = (QUADSPI->CR & ~(QUADSPI_CR_FTHRES)) | (0x00 << QUADSPI_CR_FTHRES_Pos); //Set FIFO threshold to 1
+ 8000bf6:	4b16      	ldr	r3, [pc, #88]	; (8000c50 <QSPI_readRegister+0x84>)
+ 8000bf8:	681b      	ldr	r3, [r3, #0]
+ 8000bfa:	4a15      	ldr	r2, [pc, #84]	; (8000c50 <QSPI_readRegister+0x84>)
+ 8000bfc:	f423 53f8 	bic.w	r3, r3, #7936	; 0x1f00
+ 8000c00:	6013      	str	r3, [r2, #0]
+	 * Instruction: 				as per param instruction
+	 *
+	 */
+	QUADSPI->CCR =
+			(QSPI_FMODE_INDIRECT_READ << QUADSPI_CCR_FMODE_Pos) 	|
+			(dataLinesMode << QUADSPI_CCR_DMODE_Pos) 				|
+ 8000c02:	79bb      	ldrb	r3, [r7, #6]
+ 8000c04:	061b      	lsls	r3, r3, #24
+			(QSPI_FMODE_INDIRECT_READ << QUADSPI_CCR_FMODE_Pos) 	|
+ 8000c06:	f043 6280 	orr.w	r2, r3, #67108864	; 0x4000000
+			(dataLinesMode << QUADSPI_CCR_IMODE_Pos) 				|
+ 8000c0a:	79bb      	ldrb	r3, [r7, #6]
+ 8000c0c:	021b      	lsls	r3, r3, #8
+			(dataLinesMode << QUADSPI_CCR_DMODE_Pos) 				|
+ 8000c0e:	431a      	orrs	r2, r3
+			(instruction << QUADSPI_CCR_INSTRUCTION_Pos);
+ 8000c10:	79fb      	ldrb	r3, [r7, #7]
+			(dataLinesMode << QUADSPI_CCR_IMODE_Pos) 				|
+ 8000c12:	431a      	orrs	r2, r3
+	QUADSPI->CCR =
+ 8000c14:	4b0e      	ldr	r3, [pc, #56]	; (8000c50 <QSPI_readRegister+0x84>)
+ 8000c16:	615a      	str	r2, [r3, #20]
+
+	/* ---------- Communication Starts Automatically ----------*/
+
+	while (!(QUADSPI->SR & QUADSPI_SR_FLEVEL)); //Wait for the byte of data to arrive
+ 8000c18:	bf00      	nop
+ 8000c1a:	4b0d      	ldr	r3, [pc, #52]	; (8000c50 <QSPI_readRegister+0x84>)
+ 8000c1c:	689b      	ldr	r3, [r3, #8]
+ 8000c1e:	f403 537c 	and.w	r3, r3, #16128	; 0x3f00
+ 8000c22:	2b00      	cmp	r3, #0
+ 8000c24:	d0f9      	beq.n	8000c1a <QSPI_readRegister+0x4e>
+	*destination = *((uint8_t*) (&(QUADSPI->DR))); //Read byte from data register and place it into provided memory; Byte access
+ 8000c26:	4b0b      	ldr	r3, [pc, #44]	; (8000c54 <QSPI_readRegister+0x88>)
+ 8000c28:	781a      	ldrb	r2, [r3, #0]
+ 8000c2a:	683b      	ldr	r3, [r7, #0]
+ 8000c2c:	701a      	strb	r2, [r3, #0]
+	while (QUADSPI->SR & QUADSPI_SR_BUSY); //Make sure no operation is going on
+ 8000c2e:	bf00      	nop
+ 8000c30:	4b07      	ldr	r3, [pc, #28]	; (8000c50 <QSPI_readRegister+0x84>)
+ 8000c32:	689b      	ldr	r3, [r3, #8]
+ 8000c34:	f003 0320 	and.w	r3, r3, #32
+ 8000c38:	2b00      	cmp	r3, #0
+ 8000c3a:	d1f9      	bne.n	8000c30 <QSPI_readRegister+0x64>
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; //Clear all flags
+ 8000c3c:	4b04      	ldr	r3, [pc, #16]	; (8000c50 <QSPI_readRegister+0x84>)
+ 8000c3e:	221b      	movs	r2, #27
+ 8000c40:	60da      	str	r2, [r3, #12]
+
+}
+ 8000c42:	bf00      	nop
+ 8000c44:	370c      	adds	r7, #12
+ 8000c46:	46bd      	mov	sp, r7
+ 8000c48:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000c4c:	4770      	bx	lr
+ 8000c4e:	bf00      	nop
+ 8000c50:	a0001000 	.word	0xa0001000
+ 8000c54:	a0001020 	.word	0xa0001020
+
+08000c58 <QSPI_indirectWriteInstruction>:
+ * @param		instruction		8-bit instruction
+ * @param		dataLinesMode	1 = 1 data line
+ * 								2 = 2 data lines
+ * 								3 = 4 data lines
+ * */
+void QSPI_indirectWriteInstruction(uint8_t instruction, uint8_t dataLinesMode) {
+ 8000c58:	b480      	push	{r7}
+ 8000c5a:	b083      	sub	sp, #12
+ 8000c5c:	af00      	add	r7, sp, #0
+ 8000c5e:	4603      	mov	r3, r0
+ 8000c60:	460a      	mov	r2, r1
+ 8000c62:	71fb      	strb	r3, [r7, #7]
+ 8000c64:	4613      	mov	r3, r2
+ 8000c66:	71bb      	strb	r3, [r7, #6]
+
+	while (QUADSPI->SR & QUADSPI_SR_BUSY); //Make sure no operation is going on
+ 8000c68:	bf00      	nop
+ 8000c6a:	4b0f      	ldr	r3, [pc, #60]	; (8000ca8 <QSPI_indirectWriteInstruction+0x50>)
+ 8000c6c:	689b      	ldr	r3, [r3, #8]
+ 8000c6e:	f003 0320 	and.w	r3, r3, #32
+ 8000c72:	2b00      	cmp	r3, #0
+ 8000c74:	d1f9      	bne.n	8000c6a <QSPI_indirectWriteInstruction+0x12>
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; // clear all flags
+ 8000c76:	4b0c      	ldr	r3, [pc, #48]	; (8000ca8 <QSPI_indirectWriteInstruction+0x50>)
+ 8000c78:	221b      	movs	r2, #27
+ 8000c7a:	60da      	str	r2, [r3, #12]
+	 * Instruction mode: 			as per param dataLines
+	 * Instruction: 				as per param instruction
+	 *
+	 */
+	QUADSPI->CCR =
+			(QSPI_FMODE_INDIRECT_WRITE << QUADSPI_CCR_FMODE_Pos) 	|
+ 8000c7c:	79bb      	ldrb	r3, [r7, #6]
+ 8000c7e:	021a      	lsls	r2, r3, #8
+			(dataLinesMode << QUADSPI_CCR_IMODE_Pos)				|
+			(instruction << QUADSPI_CCR_INSTRUCTION_Pos);
+ 8000c80:	79fb      	ldrb	r3, [r7, #7]
+			(dataLinesMode << QUADSPI_CCR_IMODE_Pos)				|
+ 8000c82:	431a      	orrs	r2, r3
+	QUADSPI->CCR =
+ 8000c84:	4b08      	ldr	r3, [pc, #32]	; (8000ca8 <QSPI_indirectWriteInstruction+0x50>)
+ 8000c86:	615a      	str	r2, [r3, #20]
+
+	/* ---------- Communication Starts Automatically ----------*/
+
+	while (!(QUADSPI->SR & QUADSPI_SR_TCF)); //Wait for operation to complete
+ 8000c88:	bf00      	nop
+ 8000c8a:	4b07      	ldr	r3, [pc, #28]	; (8000ca8 <QSPI_indirectWriteInstruction+0x50>)
+ 8000c8c:	689b      	ldr	r3, [r3, #8]
+ 8000c8e:	f003 0302 	and.w	r3, r3, #2
+ 8000c92:	2b00      	cmp	r3, #0
+ 8000c94:	d0f9      	beq.n	8000c8a <QSPI_indirectWriteInstruction+0x32>
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; //Clear flags
+ 8000c96:	4b04      	ldr	r3, [pc, #16]	; (8000ca8 <QSPI_indirectWriteInstruction+0x50>)
+ 8000c98:	221b      	movs	r2, #27
+ 8000c9a:	60da      	str	r2, [r3, #12]
+
+}
+ 8000c9c:	bf00      	nop
+ 8000c9e:	370c      	adds	r7, #12
+ 8000ca0:	46bd      	mov	sp, r7
+ 8000ca2:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000ca6:	4770      	bx	lr
+ 8000ca8:	a0001000 	.word	0xa0001000
+
+08000cac <QSPI_indirectWriteRegister>:
+ * @param		registerContent	New register value
+ * @param		dataLinesMode	1 = 1 data line
+ * 								2 = 2 data lines
+ * 								3 = 4 data lines
+ * */
+void QSPI_indirectWriteRegister(uint8_t instruction, uint8_t dataLinesMode, uint8_t registerContent) {
+ 8000cac:	b480      	push	{r7}
+ 8000cae:	b083      	sub	sp, #12
+ 8000cb0:	af00      	add	r7, sp, #0
+ 8000cb2:	4603      	mov	r3, r0
+ 8000cb4:	71fb      	strb	r3, [r7, #7]
+ 8000cb6:	460b      	mov	r3, r1
+ 8000cb8:	71bb      	strb	r3, [r7, #6]
+ 8000cba:	4613      	mov	r3, r2
+ 8000cbc:	717b      	strb	r3, [r7, #5]
+
+	while (QUADSPI->SR & QUADSPI_SR_BUSY); //Make sure no operation is going on
+ 8000cbe:	bf00      	nop
+ 8000cc0:	4b16      	ldr	r3, [pc, #88]	; (8000d1c <QSPI_indirectWriteRegister+0x70>)
+ 8000cc2:	689b      	ldr	r3, [r3, #8]
+ 8000cc4:	f003 0320 	and.w	r3, r3, #32
+ 8000cc8:	2b00      	cmp	r3, #0
+ 8000cca:	d1f9      	bne.n	8000cc0 <QSPI_indirectWriteRegister+0x14>
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; // Clear all flags
+ 8000ccc:	4b13      	ldr	r3, [pc, #76]	; (8000d1c <QSPI_indirectWriteRegister+0x70>)
+ 8000cce:	221b      	movs	r2, #27
+ 8000cd0:	60da      	str	r2, [r3, #12]
+	QUADSPI->DLR = 1U - 1U; //Set number of bytes to write: 1
+ 8000cd2:	4b12      	ldr	r3, [pc, #72]	; (8000d1c <QSPI_indirectWriteRegister+0x70>)
+ 8000cd4:	2200      	movs	r2, #0
+ 8000cd6:	611a      	str	r2, [r3, #16]
+	QUADSPI->CR = (QUADSPI->CR & ~(QUADSPI_CR_FTHRES)) | ((1U - 1U) << QUADSPI_CR_FTHRES_Pos); //FIFO threshold: 1
+ 8000cd8:	4b10      	ldr	r3, [pc, #64]	; (8000d1c <QSPI_indirectWriteRegister+0x70>)
+ 8000cda:	681b      	ldr	r3, [r3, #0]
+ 8000cdc:	4a0f      	ldr	r2, [pc, #60]	; (8000d1c <QSPI_indirectWriteRegister+0x70>)
+ 8000cde:	f423 53f8 	bic.w	r3, r3, #7936	; 0x1f00
+ 8000ce2:	6013      	str	r3, [r2, #0]
+	 *
+	 * Load data
+	 *
+	 */
+	QUADSPI->CCR =
+			(QSPI_FMODE_INDIRECT_WRITE << QUADSPI_CCR_FMODE_Pos) 	|
+ 8000ce4:	79bb      	ldrb	r3, [r7, #6]
+ 8000ce6:	061a      	lsls	r2, r3, #24
+			(dataLinesMode << QUADSPI_CCR_DMODE_Pos) 				|
+			(dataLinesMode << QUADSPI_CCR_IMODE_Pos) 				|
+ 8000ce8:	79bb      	ldrb	r3, [r7, #6]
+ 8000cea:	021b      	lsls	r3, r3, #8
+			(dataLinesMode << QUADSPI_CCR_DMODE_Pos) 				|
+ 8000cec:	431a      	orrs	r2, r3
+			(instruction << QUADSPI_CCR_INSTRUCTION_Pos);
+ 8000cee:	79fb      	ldrb	r3, [r7, #7]
+			(dataLinesMode << QUADSPI_CCR_IMODE_Pos) 				|
+ 8000cf0:	431a      	orrs	r2, r3
+	QUADSPI->CCR =
+ 8000cf2:	4b0a      	ldr	r3, [pc, #40]	; (8000d1c <QSPI_indirectWriteRegister+0x70>)
+ 8000cf4:	615a      	str	r2, [r3, #20]
+
+	QUADSPI->DR = registerContent; //Load new register value into data register
+ 8000cf6:	4a09      	ldr	r2, [pc, #36]	; (8000d1c <QSPI_indirectWriteRegister+0x70>)
+ 8000cf8:	797b      	ldrb	r3, [r7, #5]
+ 8000cfa:	6213      	str	r3, [r2, #32]
+
+	/* ---------- Communication Starts Automatically ----------*/
+
+	while (!(QUADSPI->SR & QUADSPI_SR_TCF)); //Wait for the end of operation
+ 8000cfc:	bf00      	nop
+ 8000cfe:	4b07      	ldr	r3, [pc, #28]	; (8000d1c <QSPI_indirectWriteRegister+0x70>)
+ 8000d00:	689b      	ldr	r3, [r3, #8]
+ 8000d02:	f003 0302 	and.w	r3, r3, #2
+ 8000d06:	2b00      	cmp	r3, #0
+ 8000d08:	d0f9      	beq.n	8000cfe <QSPI_indirectWriteRegister+0x52>
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; //Clear all flags
+ 8000d0a:	4b04      	ldr	r3, [pc, #16]	; (8000d1c <QSPI_indirectWriteRegister+0x70>)
+ 8000d0c:	221b      	movs	r2, #27
+ 8000d0e:	60da      	str	r2, [r3, #12]
+
+}
+ 8000d10:	bf00      	nop
+ 8000d12:	370c      	adds	r7, #12
+ 8000d14:	46bd      	mov	sp, r7
+ 8000d16:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000d1a:	4770      	bx	lr
+ 8000d1c:	a0001000 	.word	0xa0001000
+
+08000d20 <QSPI_readMemoryBytesQuad>:
+ * @param		address			address of the first byte to read
+ * @param		length			how many bytes to read
+ * @param		destination		destination array
+ *
+ * */
+void QSPI_readMemoryBytesQuad(uint32_t address, uint32_t length, uint8_t destination[]) {
+ 8000d20:	b480      	push	{r7}
+ 8000d22:	b085      	sub	sp, #20
+ 8000d24:	af00      	add	r7, sp, #0
+ 8000d26:	60f8      	str	r0, [r7, #12]
+ 8000d28:	60b9      	str	r1, [r7, #8]
+ 8000d2a:	607a      	str	r2, [r7, #4]
+
+	while (QUADSPI->SR & QUADSPI_SR_BUSY); //Make sure no operation is going on
+ 8000d2c:	bf00      	nop
+ 8000d2e:	4b1c      	ldr	r3, [pc, #112]	; (8000da0 <QSPI_readMemoryBytesQuad+0x80>)
+ 8000d30:	689b      	ldr	r3, [r3, #8]
+ 8000d32:	f003 0320 	and.w	r3, r3, #32
+ 8000d36:	2b00      	cmp	r3, #0
+ 8000d38:	d1f9      	bne.n	8000d2e <QSPI_readMemoryBytesQuad+0xe>
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; // clear all flags
+ 8000d3a:	4b19      	ldr	r3, [pc, #100]	; (8000da0 <QSPI_readMemoryBytesQuad+0x80>)
+ 8000d3c:	221b      	movs	r2, #27
+ 8000d3e:	60da      	str	r2, [r3, #12]
+	QUADSPI->DLR = length - 1U; //Set number of bytes to read
+ 8000d40:	4a17      	ldr	r2, [pc, #92]	; (8000da0 <QSPI_readMemoryBytesQuad+0x80>)
+ 8000d42:	68bb      	ldr	r3, [r7, #8]
+ 8000d44:	3b01      	subs	r3, #1
+ 8000d46:	6113      	str	r3, [r2, #16]
+	QUADSPI->CR = (QUADSPI->CR & ~(QUADSPI_CR_FTHRES)) | (0x00 << QUADSPI_CR_FTHRES_Pos); //Set FIFO threshold to 1
+ 8000d48:	4b15      	ldr	r3, [pc, #84]	; (8000da0 <QSPI_readMemoryBytesQuad+0x80>)
+ 8000d4a:	681b      	ldr	r3, [r3, #0]
+ 8000d4c:	4a14      	ldr	r2, [pc, #80]	; (8000da0 <QSPI_readMemoryBytesQuad+0x80>)
+ 8000d4e:	f423 53f8 	bic.w	r3, r3, #7936	; 0x1f00
+ 8000d52:	6013      	str	r3, [r2, #0]
+	 *
+	 * Set 24-bit Address
+	 *
+	 */
+
+	QUADSPI->CCR =
+ 8000d54:	4b12      	ldr	r3, [pc, #72]	; (8000da0 <QSPI_readMemoryBytesQuad+0x80>)
+ 8000d56:	4a13      	ldr	r2, [pc, #76]	; (8000da4 <QSPI_readMemoryBytesQuad+0x84>)
+ 8000d58:	615a      	str	r2, [r3, #20]
+			(QIO_QUAD << QUADSPI_CCR_ADMODE_Pos) 							|
+			(QSPI_ADSIZE_24 << QUADSPI_CCR_ADSIZE_Pos) 						|
+			(0x06 << QUADSPI_CCR_DCYC_Pos)									|
+			(MT25QL128ABA1EW9_COMMAND_QUAD_OUTPUT_FAST_READ << QUADSPI_CCR_INSTRUCTION_Pos);
+
+	QUADSPI->AR = (0xFFFFFF) & address;
+ 8000d5a:	4a11      	ldr	r2, [pc, #68]	; (8000da0 <QSPI_readMemoryBytesQuad+0x80>)
+ 8000d5c:	68fb      	ldr	r3, [r7, #12]
+ 8000d5e:	f023 437f 	bic.w	r3, r3, #4278190080	; 0xff000000
+ 8000d62:	6193      	str	r3, [r2, #24]
+
+	/* ---------- Communication Starts Automatically ----------*/
+
+	while (QUADSPI->SR & QUADSPI_SR_BUSY) {
+ 8000d64:	e00c      	b.n	8000d80 <QSPI_readMemoryBytesQuad+0x60>
+		if (QUADSPI->SR & QUADSPI_SR_FTF) {
+ 8000d66:	4b0e      	ldr	r3, [pc, #56]	; (8000da0 <QSPI_readMemoryBytesQuad+0x80>)
+ 8000d68:	689b      	ldr	r3, [r3, #8]
+ 8000d6a:	f003 0304 	and.w	r3, r3, #4
+ 8000d6e:	2b00      	cmp	r3, #0
+ 8000d70:	d006      	beq.n	8000d80 <QSPI_readMemoryBytesQuad+0x60>
+			*destination = *((uint8_t*) &(QUADSPI->DR)); //Read a byte from data register, byte access
+ 8000d72:	4b0d      	ldr	r3, [pc, #52]	; (8000da8 <QSPI_readMemoryBytesQuad+0x88>)
+ 8000d74:	781a      	ldrb	r2, [r3, #0]
+ 8000d76:	687b      	ldr	r3, [r7, #4]
+ 8000d78:	701a      	strb	r2, [r3, #0]
+			destination++;
+ 8000d7a:	687b      	ldr	r3, [r7, #4]
+ 8000d7c:	3301      	adds	r3, #1
+ 8000d7e:	607b      	str	r3, [r7, #4]
+	while (QUADSPI->SR & QUADSPI_SR_BUSY) {
+ 8000d80:	4b07      	ldr	r3, [pc, #28]	; (8000da0 <QSPI_readMemoryBytesQuad+0x80>)
+ 8000d82:	689b      	ldr	r3, [r3, #8]
+ 8000d84:	f003 0320 	and.w	r3, r3, #32
+ 8000d88:	2b00      	cmp	r3, #0
+ 8000d8a:	d1ec      	bne.n	8000d66 <QSPI_readMemoryBytesQuad+0x46>
+		}
+	}
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; //Clear flags
+ 8000d8c:	4b04      	ldr	r3, [pc, #16]	; (8000da0 <QSPI_readMemoryBytesQuad+0x80>)
+ 8000d8e:	221b      	movs	r2, #27
+ 8000d90:	60da      	str	r2, [r3, #12]
+
+}
+ 8000d92:	bf00      	nop
+ 8000d94:	3714      	adds	r7, #20
+ 8000d96:	46bd      	mov	sp, r7
+ 8000d98:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000d9c:	4770      	bx	lr
+ 8000d9e:	bf00      	nop
+ 8000da0:	a0001000 	.word	0xa0001000
+ 8000da4:	07182f6b 	.word	0x07182f6b
+ 8000da8:	a0001020 	.word	0xa0001020
+
+08000dac <QSPI_eraseQuad>:
+ *
+ * @param		address			address of the first byte of subsector to erase
+ * @param		instruction		8-bit instruction (various erase commands)
+ *
+ * */
+void QSPI_eraseQuad(uint8_t instruction, uint32_t address) {
+ 8000dac:	b580      	push	{r7, lr}
+ 8000dae:	b084      	sub	sp, #16
+ 8000db0:	af00      	add	r7, sp, #0
+ 8000db2:	4603      	mov	r3, r0
+ 8000db4:	6039      	str	r1, [r7, #0]
+ 8000db6:	71fb      	strb	r3, [r7, #7]
+
+	QSPI_indirectWriteInstruction(MT25QL128ABA1EW9_COMMAND_WRITE_ENABLE, QIO_QUAD); //erase requires write enable command first
+ 8000db8:	2103      	movs	r1, #3
+ 8000dba:	2006      	movs	r0, #6
+ 8000dbc:	f7ff ff4c 	bl	8000c58 <QSPI_indirectWriteInstruction>
+	while (QUADSPI->SR & QUADSPI_SR_BUSY); //Make sure no operation going on
+ 8000dc0:	bf00      	nop
+ 8000dc2:	4b19      	ldr	r3, [pc, #100]	; (8000e28 <QSPI_eraseQuad+0x7c>)
+ 8000dc4:	689b      	ldr	r3, [r3, #8]
+ 8000dc6:	f003 0320 	and.w	r3, r3, #32
+ 8000dca:	2b00      	cmp	r3, #0
+ 8000dcc:	d1f9      	bne.n	8000dc2 <QSPI_eraseQuad+0x16>
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; // clear all flags
+ 8000dce:	4b16      	ldr	r3, [pc, #88]	; (8000e28 <QSPI_eraseQuad+0x7c>)
+ 8000dd0:	221b      	movs	r2, #27
+ 8000dd2:	60da      	str	r2, [r3, #12]
+	 *
+	 * Set 24-bit Address
+	 *
+	 */
+	QUADSPI->CCR = (QSPI_FMODE_INDIRECT_WRITE << QUADSPI_CCR_FMODE_Pos) | (QIO_QUAD << QUADSPI_CCR_ADMODE_Pos) | (0x02 << QUADSPI_CCR_ADSIZE_Pos)
+			| (QIO_QUAD << QUADSPI_CCR_IMODE_Pos) | (instruction << QUADSPI_CCR_INSTRUCTION_Pos);
+ 8000dd4:	79fb      	ldrb	r3, [r7, #7]
+ 8000dd6:	f443 523c 	orr.w	r2, r3, #12032	; 0x2f00
+	QUADSPI->CCR = (QSPI_FMODE_INDIRECT_WRITE << QUADSPI_CCR_FMODE_Pos) | (QIO_QUAD << QUADSPI_CCR_ADMODE_Pos) | (0x02 << QUADSPI_CCR_ADSIZE_Pos)
+ 8000dda:	4b13      	ldr	r3, [pc, #76]	; (8000e28 <QSPI_eraseQuad+0x7c>)
+ 8000ddc:	615a      	str	r2, [r3, #20]
+	QUADSPI->AR = 0xFFFFFF & address;
+ 8000dde:	4a12      	ldr	r2, [pc, #72]	; (8000e28 <QSPI_eraseQuad+0x7c>)
+ 8000de0:	683b      	ldr	r3, [r7, #0]
+ 8000de2:	f023 437f 	bic.w	r3, r3, #4278190080	; 0xff000000
+ 8000de6:	6193      	str	r3, [r2, #24]
+
+	/* ---------- Communication Starts Automatically ----------*/
+
+	while (QUADSPI->SR & QUADSPI_SR_BUSY); //wait until operation ends
+ 8000de8:	bf00      	nop
+ 8000dea:	4b0f      	ldr	r3, [pc, #60]	; (8000e28 <QSPI_eraseQuad+0x7c>)
+ 8000dec:	689b      	ldr	r3, [r3, #8]
+ 8000dee:	f003 0320 	and.w	r3, r3, #32
+ 8000df2:	2b00      	cmp	r3, #0
+ 8000df4:	d1f9      	bne.n	8000dea <QSPI_eraseQuad+0x3e>
+
+	/* ---------- Waiting for erase process to end ---------- */
+
+	uint8_t eraseEnded = 0x00;
+ 8000df6:	2300      	movs	r3, #0
+ 8000df8:	73fb      	strb	r3, [r7, #15]
+	do {
+		QSPI_readRegister(MT25QL128ABA1EW9_COMMAND_READ_FLAG_STATUS_REGISTER, QIO_QUAD, &eraseEnded);
+ 8000dfa:	f107 030f 	add.w	r3, r7, #15
+ 8000dfe:	461a      	mov	r2, r3
+ 8000e00:	2103      	movs	r1, #3
+ 8000e02:	2070      	movs	r0, #112	; 0x70
+ 8000e04:	f7ff fee2 	bl	8000bcc <QSPI_readRegister>
+		eraseEnded &= 0x80;
+ 8000e08:	7bfb      	ldrb	r3, [r7, #15]
+ 8000e0a:	f023 037f 	bic.w	r3, r3, #127	; 0x7f
+ 8000e0e:	b2db      	uxtb	r3, r3
+ 8000e10:	73fb      	strb	r3, [r7, #15]
+	} while (eraseEnded == 0x00);
+ 8000e12:	7bfb      	ldrb	r3, [r7, #15]
+ 8000e14:	2b00      	cmp	r3, #0
+ 8000e16:	d0f0      	beq.n	8000dfa <QSPI_eraseQuad+0x4e>
+
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; //Erase ended; clear flags
+ 8000e18:	4b03      	ldr	r3, [pc, #12]	; (8000e28 <QSPI_eraseQuad+0x7c>)
+ 8000e1a:	221b      	movs	r2, #27
+ 8000e1c:	60da      	str	r2, [r3, #12]
+
+}
+ 8000e1e:	bf00      	nop
+ 8000e20:	3710      	adds	r7, #16
+ 8000e22:	46bd      	mov	sp, r7
+ 8000e24:	bd80      	pop	{r7, pc}
+ 8000e26:	bf00      	nop
+ 8000e28:	a0001000 	.word	0xa0001000
+
+08000e2c <QSPI_programMemoryBytesQuad>:
+
+void QSPI_programMemoryBytesQuad(uint32_t address, uint32_t length, uint8_t data[]) {
+ 8000e2c:	b580      	push	{r7, lr}
+ 8000e2e:	b086      	sub	sp, #24
+ 8000e30:	af00      	add	r7, sp, #0
+ 8000e32:	60f8      	str	r0, [r7, #12]
+ 8000e34:	60b9      	str	r1, [r7, #8]
+ 8000e36:	607a      	str	r2, [r7, #4]
+
+	QSPI_indirectWriteInstruction(MT25QL128ABA1EW9_COMMAND_WRITE_ENABLE, QIO_QUAD); //program requires write enable
+ 8000e38:	2103      	movs	r1, #3
+ 8000e3a:	2006      	movs	r0, #6
+ 8000e3c:	f7ff ff0c 	bl	8000c58 <QSPI_indirectWriteInstruction>
+	while (QUADSPI->SR & QUADSPI_SR_BUSY); //Wait for the ongoing operations to finish
+ 8000e40:	bf00      	nop
+ 8000e42:	4b27      	ldr	r3, [pc, #156]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000e44:	689b      	ldr	r3, [r3, #8]
+ 8000e46:	f003 0320 	and.w	r3, r3, #32
+ 8000e4a:	2b00      	cmp	r3, #0
+ 8000e4c:	d1f9      	bne.n	8000e42 <QSPI_programMemoryBytesQuad+0x16>
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; // clear all flags
+ 8000e4e:	4b24      	ldr	r3, [pc, #144]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000e50:	221b      	movs	r2, #27
+ 8000e52:	60da      	str	r2, [r3, #12]
+	QUADSPI->DLR = length - 1U; //Set number of bytes to write
+ 8000e54:	4a22      	ldr	r2, [pc, #136]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000e56:	68bb      	ldr	r3, [r7, #8]
+ 8000e58:	3b01      	subs	r3, #1
+ 8000e5a:	6113      	str	r3, [r2, #16]
+	QUADSPI->CR = (QUADSPI->CR & ~(QUADSPI_CR_FTHRES)) | ((1U - 1U) << QUADSPI_CR_FTHRES_Pos); //Set FIFO threshold: 1
+ 8000e5c:	4b20      	ldr	r3, [pc, #128]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000e5e:	681b      	ldr	r3, [r3, #0]
+ 8000e60:	4a1f      	ldr	r2, [pc, #124]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000e62:	f423 53f8 	bic.w	r3, r3, #7936	; 0x1f00
+ 8000e66:	6013      	str	r3, [r2, #0]
+	 * Instruction: 				Quad Input Fast Program
+	 *
+	 * Write 24-bit Address
+	 *
+	 */
+	QUADSPI->CCR =
+ 8000e68:	4b1d      	ldr	r3, [pc, #116]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000e6a:	4a1e      	ldr	r2, [pc, #120]	; (8000ee4 <QSPI_programMemoryBytesQuad+0xb8>)
+ 8000e6c:	615a      	str	r2, [r3, #20]
+			(QIO_QUAD << QUADSPI_CCR_DMODE_Pos) 					|
+			(QIO_QUAD << QUADSPI_CCR_IMODE_Pos)						|
+			(QIO_QUAD << QUADSPI_CCR_ADMODE_Pos) 					|
+			(QSPI_ADSIZE_24 << QUADSPI_CCR_ADSIZE_Pos)				|
+			(MT25QL128ABA1EW9_COMMAND_QUAD_INPUT_FAST_PROGRAM << QUADSPI_CCR_INSTRUCTION_Pos);
+	QUADSPI->AR = 0xFFFFFF & address;
+ 8000e6e:	4a1c      	ldr	r2, [pc, #112]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000e70:	68fb      	ldr	r3, [r7, #12]
+ 8000e72:	f023 437f 	bic.w	r3, r3, #4278190080	; 0xff000000
+ 8000e76:	6193      	str	r3, [r2, #24]
+	uint32_t data_pointer = 0;
+ 8000e78:	2300      	movs	r3, #0
+ 8000e7a:	617b      	str	r3, [r7, #20]
+	do {
+		*((uint8_t*) (&(QUADSPI->DR))) = data[data_pointer]; //place data - byte access
+ 8000e7c:	687a      	ldr	r2, [r7, #4]
+ 8000e7e:	697b      	ldr	r3, [r7, #20]
+ 8000e80:	4413      	add	r3, r2
+ 8000e82:	4a19      	ldr	r2, [pc, #100]	; (8000ee8 <QSPI_programMemoryBytesQuad+0xbc>)
+ 8000e84:	781b      	ldrb	r3, [r3, #0]
+ 8000e86:	7013      	strb	r3, [r2, #0]
+		data_pointer++;
+ 8000e88:	697b      	ldr	r3, [r7, #20]
+ 8000e8a:	3301      	adds	r3, #1
+ 8000e8c:	617b      	str	r3, [r7, #20]
+		while ((QUADSPI->SR & QUADSPI_SR_FLEVEL) != 0x00); //wait for the data to be shifted out
+ 8000e8e:	bf00      	nop
+ 8000e90:	4b13      	ldr	r3, [pc, #76]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000e92:	689b      	ldr	r3, [r3, #8]
+ 8000e94:	f403 537c 	and.w	r3, r3, #16128	; 0x3f00
+ 8000e98:	2b00      	cmp	r3, #0
+ 8000e9a:	d1f9      	bne.n	8000e90 <QSPI_programMemoryBytesQuad+0x64>
+	} while ((QUADSPI->SR & QUADSPI_SR_BUSY));
+ 8000e9c:	4b10      	ldr	r3, [pc, #64]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000e9e:	689b      	ldr	r3, [r3, #8]
+ 8000ea0:	f003 0320 	and.w	r3, r3, #32
+ 8000ea4:	2b00      	cmp	r3, #0
+ 8000ea6:	d1e9      	bne.n	8000e7c <QSPI_programMemoryBytesQuad+0x50>
+
+	/* ---------- Communication Starts Automatically, ends at this point ----------*/
+
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; //clear flags
+ 8000ea8:	4b0d      	ldr	r3, [pc, #52]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000eaa:	221b      	movs	r2, #27
+ 8000eac:	60da      	str	r2, [r3, #12]
+
+	/* ---------- Checking status register to make sure writing operation has finished ---------- */
+	uint8_t readyStatusFlag = 0x00;
+ 8000eae:	2300      	movs	r3, #0
+ 8000eb0:	74fb      	strb	r3, [r7, #19]
+	do {
+		QSPI_readRegister(MT25QL128ABA1EW9_COMMAND_READ_FLAG_STATUS_REGISTER, QIO_QUAD, &readyStatusFlag);
+ 8000eb2:	f107 0313 	add.w	r3, r7, #19
+ 8000eb6:	461a      	mov	r2, r3
+ 8000eb8:	2103      	movs	r1, #3
+ 8000eba:	2070      	movs	r0, #112	; 0x70
+ 8000ebc:	f7ff fe86 	bl	8000bcc <QSPI_readRegister>
+		readyStatusFlag &= 0x80;
+ 8000ec0:	7cfb      	ldrb	r3, [r7, #19]
+ 8000ec2:	f023 037f 	bic.w	r3, r3, #127	; 0x7f
+ 8000ec6:	b2db      	uxtb	r3, r3
+ 8000ec8:	74fb      	strb	r3, [r7, #19]
+	} while (readyStatusFlag == 0x00);
+ 8000eca:	7cfb      	ldrb	r3, [r7, #19]
+ 8000ecc:	2b00      	cmp	r3, #0
+ 8000ece:	d0f0      	beq.n	8000eb2 <QSPI_programMemoryBytesQuad+0x86>
+
+	QUADSPI->FCR = QUADSPI_FCR_CTOF | QUADSPI_FCR_CSMF | QUADSPI_FCR_CTCF | QUADSPI_FCR_CTEF; //Clear flags
+ 8000ed0:	4b03      	ldr	r3, [pc, #12]	; (8000ee0 <QSPI_programMemoryBytesQuad+0xb4>)
+ 8000ed2:	221b      	movs	r2, #27
+ 8000ed4:	60da      	str	r2, [r3, #12]
+
+}
+ 8000ed6:	bf00      	nop
+ 8000ed8:	3718      	adds	r7, #24
+ 8000eda:	46bd      	mov	sp, r7
+ 8000edc:	bd80      	pop	{r7, pc}
+ 8000ede:	bf00      	nop
+ 8000ee0:	a0001000 	.word	0xa0001000
+ 8000ee4:	03002f32 	.word	0x03002f32
+ 8000ee8:	a0001020 	.word	0xa0001020
+
+08000eec <rcc_setup>:
+void rcc_gpio_portd(void);
+void rcc_gpio_porte(void);
+void rcc_init(void);
+void rcc_quadspi(void);
+
+void rcc_setup(void) {
+ 8000eec:	b580      	push	{r7, lr}
+ 8000eee:	af00      	add	r7, sp, #0
+	rcc_init();
+ 8000ef0:	f000 f8fc 	bl	80010ec <rcc_init>
+	rcc_usart1();
+ 8000ef4:	f000 f88a 	bl	800100c <rcc_usart1>
+	rcc_gpio_porta();
+ 8000ef8:	f000 f8a8 	bl	800104c <rcc_gpio_porta>
+	rcc_gpio_portb();
+ 8000efc:	f000 f8b6 	bl	800106c <rcc_gpio_portb>
+	rcc_gpio_porti();
+ 8000f00:	f000 f8c4 	bl	800108c <rcc_gpio_porti>
+	rcc_gpio_porth();
+ 8000f04:	f000 f852 	bl	8000fac <rcc_gpio_porth>
+	rcc_gpio_portd();
+ 8000f08:	f000 f840 	bl	8000f8c <rcc_gpio_portd>
+	rcc_gpio_porte();
+ 8000f0c:	f000 f82e 	bl	8000f6c <rcc_gpio_porte>
+	rcc_dma2();
+ 8000f10:	f000 f8dc 	bl	80010cc <rcc_dma2>
+	rcc_i2c3();
+ 8000f14:	f000 f81a 	bl	8000f4c <rcc_i2c3>
+	rcc_dma1();
+ 8000f18:	f000 f8c8 	bl	80010ac <rcc_dma1>
+	rcc_bsctmr6();
+ 8000f1c:	f000 f856 	bl	8000fcc <rcc_bsctmr6>
+	rcc_bsctmr7();
+ 8000f20:	f000 f864 	bl	8000fec <rcc_bsctmr7>
+	rcc_quadspi();
+ 8000f24:	f000 f802 	bl	8000f2c <rcc_quadspi>
+
+}
+ 8000f28:	bf00      	nop
+ 8000f2a:	bd80      	pop	{r7, pc}
+
+08000f2c <rcc_quadspi>:
+
+void rcc_quadspi(void){
+ 8000f2c:	b480      	push	{r7}
+ 8000f2e:	af00      	add	r7, sp, #0
+	RCC->AHB3ENR |= RCC_AHB3ENR_QSPIEN;
+ 8000f30:	4b05      	ldr	r3, [pc, #20]	; (8000f48 <rcc_quadspi+0x1c>)
+ 8000f32:	6b9b      	ldr	r3, [r3, #56]	; 0x38
+ 8000f34:	4a04      	ldr	r2, [pc, #16]	; (8000f48 <rcc_quadspi+0x1c>)
+ 8000f36:	f043 0302 	orr.w	r3, r3, #2
+ 8000f3a:	6393      	str	r3, [r2, #56]	; 0x38
+}
+ 8000f3c:	bf00      	nop
+ 8000f3e:	46bd      	mov	sp, r7
+ 8000f40:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000f44:	4770      	bx	lr
+ 8000f46:	bf00      	nop
+ 8000f48:	40023800 	.word	0x40023800
+
+08000f4c <rcc_i2c3>:
+
+void rcc_i2c3(void){
+ 8000f4c:	b480      	push	{r7}
+ 8000f4e:	af00      	add	r7, sp, #0
+	RCC->APB1ENR |= RCC_APB1ENR_I2C3EN;
+ 8000f50:	4b05      	ldr	r3, [pc, #20]	; (8000f68 <rcc_i2c3+0x1c>)
+ 8000f52:	6c1b      	ldr	r3, [r3, #64]	; 0x40
+ 8000f54:	4a04      	ldr	r2, [pc, #16]	; (8000f68 <rcc_i2c3+0x1c>)
+ 8000f56:	f443 0300 	orr.w	r3, r3, #8388608	; 0x800000
+ 8000f5a:	6413      	str	r3, [r2, #64]	; 0x40
+}
+ 8000f5c:	bf00      	nop
+ 8000f5e:	46bd      	mov	sp, r7
+ 8000f60:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000f64:	4770      	bx	lr
+ 8000f66:	bf00      	nop
+ 8000f68:	40023800 	.word	0x40023800
+
+08000f6c <rcc_gpio_porte>:
+
+void rcc_gpio_porte(void){
+ 8000f6c:	b480      	push	{r7}
+ 8000f6e:	af00      	add	r7, sp, #0
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;
+ 8000f70:	4b05      	ldr	r3, [pc, #20]	; (8000f88 <rcc_gpio_porte+0x1c>)
+ 8000f72:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 8000f74:	4a04      	ldr	r2, [pc, #16]	; (8000f88 <rcc_gpio_porte+0x1c>)
+ 8000f76:	f043 0310 	orr.w	r3, r3, #16
+ 8000f7a:	6313      	str	r3, [r2, #48]	; 0x30
+}
+ 8000f7c:	bf00      	nop
+ 8000f7e:	46bd      	mov	sp, r7
+ 8000f80:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000f84:	4770      	bx	lr
+ 8000f86:	bf00      	nop
+ 8000f88:	40023800 	.word	0x40023800
+
+08000f8c <rcc_gpio_portd>:
+
+void rcc_gpio_portd(void){
+ 8000f8c:	b480      	push	{r7}
+ 8000f8e:	af00      	add	r7, sp, #0
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
+ 8000f90:	4b05      	ldr	r3, [pc, #20]	; (8000fa8 <rcc_gpio_portd+0x1c>)
+ 8000f92:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 8000f94:	4a04      	ldr	r2, [pc, #16]	; (8000fa8 <rcc_gpio_portd+0x1c>)
+ 8000f96:	f043 0308 	orr.w	r3, r3, #8
+ 8000f9a:	6313      	str	r3, [r2, #48]	; 0x30
+}
+ 8000f9c:	bf00      	nop
+ 8000f9e:	46bd      	mov	sp, r7
+ 8000fa0:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000fa4:	4770      	bx	lr
+ 8000fa6:	bf00      	nop
+ 8000fa8:	40023800 	.word	0x40023800
+
+08000fac <rcc_gpio_porth>:
+
+void rcc_gpio_porth(void){
+ 8000fac:	b480      	push	{r7}
+ 8000fae:	af00      	add	r7, sp, #0
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOHEN;
+ 8000fb0:	4b05      	ldr	r3, [pc, #20]	; (8000fc8 <rcc_gpio_porth+0x1c>)
+ 8000fb2:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 8000fb4:	4a04      	ldr	r2, [pc, #16]	; (8000fc8 <rcc_gpio_porth+0x1c>)
+ 8000fb6:	f043 0380 	orr.w	r3, r3, #128	; 0x80
+ 8000fba:	6313      	str	r3, [r2, #48]	; 0x30
+}
+ 8000fbc:	bf00      	nop
+ 8000fbe:	46bd      	mov	sp, r7
+ 8000fc0:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000fc4:	4770      	bx	lr
+ 8000fc6:	bf00      	nop
+ 8000fc8:	40023800 	.word	0x40023800
+
+08000fcc <rcc_bsctmr6>:
+	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN; //enable clock for general purpose timer 3
+}
+void rcc_advtmr1(void){
+	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN; //enable clock for advanced timer 1
+}
+void rcc_bsctmr6(void){
+ 8000fcc:	b480      	push	{r7}
+ 8000fce:	af00      	add	r7, sp, #0
+	RCC->APB1ENR |= RCC_APB1ENR_TIM6EN; //enable clock for basic timer 6
+ 8000fd0:	4b05      	ldr	r3, [pc, #20]	; (8000fe8 <rcc_bsctmr6+0x1c>)
+ 8000fd2:	6c1b      	ldr	r3, [r3, #64]	; 0x40
+ 8000fd4:	4a04      	ldr	r2, [pc, #16]	; (8000fe8 <rcc_bsctmr6+0x1c>)
+ 8000fd6:	f043 0310 	orr.w	r3, r3, #16
+ 8000fda:	6413      	str	r3, [r2, #64]	; 0x40
+}
+ 8000fdc:	bf00      	nop
+ 8000fde:	46bd      	mov	sp, r7
+ 8000fe0:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000fe4:	4770      	bx	lr
+ 8000fe6:	bf00      	nop
+ 8000fe8:	40023800 	.word	0x40023800
+
+08000fec <rcc_bsctmr7>:
+void rcc_bsctmr7(void){
+ 8000fec:	b480      	push	{r7}
+ 8000fee:	af00      	add	r7, sp, #0
+	RCC->APB1ENR |= RCC_APB1ENR_TIM7EN; //enable clock for basic timer 7
+ 8000ff0:	4b05      	ldr	r3, [pc, #20]	; (8001008 <rcc_bsctmr7+0x1c>)
+ 8000ff2:	6c1b      	ldr	r3, [r3, #64]	; 0x40
+ 8000ff4:	4a04      	ldr	r2, [pc, #16]	; (8001008 <rcc_bsctmr7+0x1c>)
+ 8000ff6:	f043 0320 	orr.w	r3, r3, #32
+ 8000ffa:	6413      	str	r3, [r2, #64]	; 0x40
+}
+ 8000ffc:	bf00      	nop
+ 8000ffe:	46bd      	mov	sp, r7
+ 8001000:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8001004:	4770      	bx	lr
+ 8001006:	bf00      	nop
+ 8001008:	40023800 	.word	0x40023800
+
+0800100c <rcc_usart1>:
+void rcc_usart1(void) {
+ 800100c:	b480      	push	{r7}
+ 800100e:	af00      	add	r7, sp, #0
+	RCC->DCKCFGR2 &= ~RCC_DCKCFGR2_USART1SEL; //reset USART1 clock source bits
+ 8001010:	4b0d      	ldr	r3, [pc, #52]	; (8001048 <rcc_usart1+0x3c>)
+ 8001012:	f8d3 3090 	ldr.w	r3, [r3, #144]	; 0x90
+ 8001016:	4a0c      	ldr	r2, [pc, #48]	; (8001048 <rcc_usart1+0x3c>)
+ 8001018:	f023 0303 	bic.w	r3, r3, #3
+ 800101c:	f8c2 3090 	str.w	r3, [r2, #144]	; 0x90
+	RCC->DCKCFGR2 |= RCC_DCKCFGR2_USART1SEL_0; //USART1 clock is system clock
+ 8001020:	4b09      	ldr	r3, [pc, #36]	; (8001048 <rcc_usart1+0x3c>)
+ 8001022:	f8d3 3090 	ldr.w	r3, [r3, #144]	; 0x90
+ 8001026:	4a08      	ldr	r2, [pc, #32]	; (8001048 <rcc_usart1+0x3c>)
+ 8001028:	f043 0301 	orr.w	r3, r3, #1
+ 800102c:	f8c2 3090 	str.w	r3, [r2, #144]	; 0x90
+	RCC->APB2ENR |= RCC_APB2ENR_USART1EN; //enable clock for USART1 peripheral
+ 8001030:	4b05      	ldr	r3, [pc, #20]	; (8001048 <rcc_usart1+0x3c>)
+ 8001032:	6c5b      	ldr	r3, [r3, #68]	; 0x44
+ 8001034:	4a04      	ldr	r2, [pc, #16]	; (8001048 <rcc_usart1+0x3c>)
+ 8001036:	f043 0310 	orr.w	r3, r3, #16
+ 800103a:	6453      	str	r3, [r2, #68]	; 0x44
+}
+ 800103c:	bf00      	nop
+ 800103e:	46bd      	mov	sp, r7
+ 8001040:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8001044:	4770      	bx	lr
+ 8001046:	bf00      	nop
+ 8001048:	40023800 	.word	0x40023800
+
+0800104c <rcc_gpio_porta>:
+void rcc_gpio_porta(void) {
+ 800104c:	b480      	push	{r7}
+ 800104e:	af00      	add	r7, sp, #0
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; //enable clock for GPIO port A
+ 8001050:	4b05      	ldr	r3, [pc, #20]	; (8001068 <rcc_gpio_porta+0x1c>)
+ 8001052:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 8001054:	4a04      	ldr	r2, [pc, #16]	; (8001068 <rcc_gpio_porta+0x1c>)
+ 8001056:	f043 0301 	orr.w	r3, r3, #1
+ 800105a:	6313      	str	r3, [r2, #48]	; 0x30
+}
+ 800105c:	bf00      	nop
+ 800105e:	46bd      	mov	sp, r7
+ 8001060:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8001064:	4770      	bx	lr
+ 8001066:	bf00      	nop
+ 8001068:	40023800 	.word	0x40023800
+
+0800106c <rcc_gpio_portb>:
+void rcc_gpio_portb(void) {
+ 800106c:	b480      	push	{r7}
+ 800106e:	af00      	add	r7, sp, #0
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN; //enable clock for GPIO port B
+ 8001070:	4b05      	ldr	r3, [pc, #20]	; (8001088 <rcc_gpio_portb+0x1c>)
+ 8001072:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 8001074:	4a04      	ldr	r2, [pc, #16]	; (8001088 <rcc_gpio_portb+0x1c>)
+ 8001076:	f043 0302 	orr.w	r3, r3, #2
+ 800107a:	6313      	str	r3, [r2, #48]	; 0x30
+}
+ 800107c:	bf00      	nop
+ 800107e:	46bd      	mov	sp, r7
+ 8001080:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8001084:	4770      	bx	lr
+ 8001086:	bf00      	nop
+ 8001088:	40023800 	.word	0x40023800
+
+0800108c <rcc_gpio_porti>:
+void rcc_gpio_porti(void) {
+ 800108c:	b480      	push	{r7}
+ 800108e:	af00      	add	r7, sp, #0
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOIEN; //enable clock for GPIO port I
+ 8001090:	4b05      	ldr	r3, [pc, #20]	; (80010a8 <rcc_gpio_porti+0x1c>)
+ 8001092:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 8001094:	4a04      	ldr	r2, [pc, #16]	; (80010a8 <rcc_gpio_porti+0x1c>)
+ 8001096:	f443 7380 	orr.w	r3, r3, #256	; 0x100
+ 800109a:	6313      	str	r3, [r2, #48]	; 0x30
+}
+ 800109c:	bf00      	nop
+ 800109e:	46bd      	mov	sp, r7
+ 80010a0:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 80010a4:	4770      	bx	lr
+ 80010a6:	bf00      	nop
+ 80010a8:	40023800 	.word	0x40023800
+
+080010ac <rcc_dma1>:
+void rcc_dma1(void) {
+ 80010ac:	b480      	push	{r7}
+ 80010ae:	af00      	add	r7, sp, #0
+	RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN; //enable clock for DMA1
+ 80010b0:	4b05      	ldr	r3, [pc, #20]	; (80010c8 <rcc_dma1+0x1c>)
+ 80010b2:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 80010b4:	4a04      	ldr	r2, [pc, #16]	; (80010c8 <rcc_dma1+0x1c>)
+ 80010b6:	f443 1300 	orr.w	r3, r3, #2097152	; 0x200000
+ 80010ba:	6313      	str	r3, [r2, #48]	; 0x30
+}
+ 80010bc:	bf00      	nop
+ 80010be:	46bd      	mov	sp, r7
+ 80010c0:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 80010c4:	4770      	bx	lr
+ 80010c6:	bf00      	nop
+ 80010c8:	40023800 	.word	0x40023800
+
+080010cc <rcc_dma2>:
+void rcc_dma2(void) {
+ 80010cc:	b480      	push	{r7}
+ 80010ce:	af00      	add	r7, sp, #0
+	RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN; //enable clock for DMA2
+ 80010d0:	4b05      	ldr	r3, [pc, #20]	; (80010e8 <rcc_dma2+0x1c>)
+ 80010d2:	6b1b      	ldr	r3, [r3, #48]	; 0x30
+ 80010d4:	4a04      	ldr	r2, [pc, #16]	; (80010e8 <rcc_dma2+0x1c>)
+ 80010d6:	f443 0380 	orr.w	r3, r3, #4194304	; 0x400000
+ 80010da:	6313      	str	r3, [r2, #48]	; 0x30
+}
+ 80010dc:	bf00      	nop
+ 80010de:	46bd      	mov	sp, r7
+ 80010e0:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 80010e4:	4770      	bx	lr
+ 80010e6:	bf00      	nop
+ 80010e8:	40023800 	.word	0x40023800
+
+080010ec <rcc_init>:
+void rcc_init(void) {
+ 80010ec:	b480      	push	{r7}
+ 80010ee:	b083      	sub	sp, #12
+ 80010f0:	af00      	add	r7, sp, #0
+
+	//enable HSE
+	RCC->CR |= RCC_CR_HSEON;
+ 80010f2:	4b4a      	ldr	r3, [pc, #296]	; (800121c <rcc_init+0x130>)
+ 80010f4:	681b      	ldr	r3, [r3, #0]
+ 80010f6:	4a49      	ldr	r2, [pc, #292]	; (800121c <rcc_init+0x130>)
+ 80010f8:	f443 3380 	orr.w	r3, r3, #65536	; 0x10000
+ 80010fc:	6013      	str	r3, [r2, #0]
+	while (!(RCC->CR & RCC_CR_HSERDY)); //wait while hardware signals HSE is stable
+ 80010fe:	bf00      	nop
+ 8001100:	4b46      	ldr	r3, [pc, #280]	; (800121c <rcc_init+0x130>)
+ 8001102:	681b      	ldr	r3, [r3, #0]
+ 8001104:	f403 3300 	and.w	r3, r3, #131072	; 0x20000
+ 8001108:	2b00      	cmp	r3, #0
+ 800110a:	d0f9      	beq.n	8001100 <rcc_init+0x14>
+
+	//enable PWR peripheral
+	volatile uint32_t temp;
+	RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+ 800110c:	4b43      	ldr	r3, [pc, #268]	; (800121c <rcc_init+0x130>)
+ 800110e:	6c1b      	ldr	r3, [r3, #64]	; 0x40
+ 8001110:	4a42      	ldr	r2, [pc, #264]	; (800121c <rcc_init+0x130>)
+ 8001112:	f043 5380 	orr.w	r3, r3, #268435456	; 0x10000000
+ 8001116:	6413      	str	r3, [r2, #64]	; 0x40
+	temp = RCC->APB1ENR & RCC_APB1ENR_PWREN;
+ 8001118:	4b40      	ldr	r3, [pc, #256]	; (800121c <rcc_init+0x130>)
+ 800111a:	6c1b      	ldr	r3, [r3, #64]	; 0x40
+ 800111c:	f003 5380 	and.w	r3, r3, #268435456	; 0x10000000
+ 8001120:	607b      	str	r3, [r7, #4]
+	(void) temp; //waste cycles until activated
+ 8001122:	687b      	ldr	r3, [r7, #4]
+
+	PWR->CR1 |= PWR_CR1_VOS; //explicit default value for internal voltage regulator
+ 8001124:	4b3e      	ldr	r3, [pc, #248]	; (8001220 <rcc_init+0x134>)
+ 8001126:	681b      	ldr	r3, [r3, #0]
+ 8001128:	4a3d      	ldr	r2, [pc, #244]	; (8001220 <rcc_init+0x134>)
+ 800112a:	f443 4340 	orr.w	r3, r3, #49152	; 0xc000
+ 800112e:	6013      	str	r3, [r2, #0]
+	(void) temp; //waste cycles until activated
+ 8001130:	687b      	ldr	r3, [r7, #4]
+	PWR->CR1 |= PWR_CR1_ODEN; //overdrive enable
+ 8001132:	4b3b      	ldr	r3, [pc, #236]	; (8001220 <rcc_init+0x134>)
+ 8001134:	681b      	ldr	r3, [r3, #0]
+ 8001136:	4a3a      	ldr	r2, [pc, #232]	; (8001220 <rcc_init+0x134>)
+ 8001138:	f443 3380 	orr.w	r3, r3, #65536	; 0x10000
+ 800113c:	6013      	str	r3, [r2, #0]
+	while (!(PWR->CSR1 & PWR_CSR1_ODRDY)); //wait while overdrive gets ready
+ 800113e:	bf00      	nop
+ 8001140:	4b37      	ldr	r3, [pc, #220]	; (8001220 <rcc_init+0x134>)
+ 8001142:	685b      	ldr	r3, [r3, #4]
+ 8001144:	f403 3380 	and.w	r3, r3, #65536	; 0x10000
+ 8001148:	2b00      	cmp	r3, #0
+ 800114a:	d0f9      	beq.n	8001140 <rcc_init+0x54>
+	PWR->CR1 |= PWR_CR1_ODSWEN; //enable overdrive switching
+ 800114c:	4b34      	ldr	r3, [pc, #208]	; (8001220 <rcc_init+0x134>)
+ 800114e:	681b      	ldr	r3, [r3, #0]
+ 8001150:	4a33      	ldr	r2, [pc, #204]	; (8001220 <rcc_init+0x134>)
+ 8001152:	f443 3300 	orr.w	r3, r3, #131072	; 0x20000
+ 8001156:	6013      	str	r3, [r2, #0]
+	while (!(PWR->CSR1 & PWR_CSR1_ODSWRDY)); //wait while overdrive switching gets ready
+ 8001158:	bf00      	nop
+ 800115a:	4b31      	ldr	r3, [pc, #196]	; (8001220 <rcc_init+0x134>)
+ 800115c:	685b      	ldr	r3, [r3, #4]
+ 800115e:	f403 3300 	and.w	r3, r3, #131072	; 0x20000
+ 8001162:	2b00      	cmp	r3, #0
+ 8001164:	d0f9      	beq.n	800115a <rcc_init+0x6e>
+
+	//configure PLL
+
+	RCC->PLLCFGR |= RCC_PLLCFGR_PLLSRC_HSE; //PLL/PLL2S source = HSE
+ 8001166:	4b2d      	ldr	r3, [pc, #180]	; (800121c <rcc_init+0x130>)
+ 8001168:	685b      	ldr	r3, [r3, #4]
+ 800116a:	4a2c      	ldr	r2, [pc, #176]	; (800121c <rcc_init+0x130>)
+ 800116c:	f443 0380 	orr.w	r3, r3, #4194304	; 0x400000
+ 8001170:	6053      	str	r3, [r2, #4]
+	RCC->PLLCFGR &= ~(0x1F << RCC_PLLCFGR_PLLM_Pos); //reset all PLLM bits
+ 8001172:	4b2a      	ldr	r3, [pc, #168]	; (800121c <rcc_init+0x130>)
+ 8001174:	685b      	ldr	r3, [r3, #4]
+ 8001176:	4a29      	ldr	r2, [pc, #164]	; (800121c <rcc_init+0x130>)
+ 8001178:	f023 031f 	bic.w	r3, r3, #31
+ 800117c:	6053      	str	r3, [r2, #4]
+	RCC->PLLCFGR |= (0x19 << RCC_PLLCFGR_PLLM_Pos); //PLLM 25
+ 800117e:	4b27      	ldr	r3, [pc, #156]	; (800121c <rcc_init+0x130>)
+ 8001180:	685b      	ldr	r3, [r3, #4]
+ 8001182:	4a26      	ldr	r2, [pc, #152]	; (800121c <rcc_init+0x130>)
+ 8001184:	f043 0319 	orr.w	r3, r3, #25
+ 8001188:	6053      	str	r3, [r2, #4]
+	RCC->PLLCFGR &= ~(0x1FF << RCC_PLLCFGR_PLLN_Pos); //reset all PLLN bits
+ 800118a:	4b24      	ldr	r3, [pc, #144]	; (800121c <rcc_init+0x130>)
+ 800118c:	685a      	ldr	r2, [r3, #4]
+ 800118e:	4923      	ldr	r1, [pc, #140]	; (800121c <rcc_init+0x130>)
+ 8001190:	4b24      	ldr	r3, [pc, #144]	; (8001224 <rcc_init+0x138>)
+ 8001192:	4013      	ands	r3, r2
+ 8001194:	604b      	str	r3, [r1, #4]
+	RCC->PLLCFGR |= (0x1B0 << RCC_PLLCFGR_PLLN_Pos); //PLLN 432
+ 8001196:	4b21      	ldr	r3, [pc, #132]	; (800121c <rcc_init+0x130>)
+ 8001198:	685b      	ldr	r3, [r3, #4]
+ 800119a:	4a20      	ldr	r2, [pc, #128]	; (800121c <rcc_init+0x130>)
+ 800119c:	f443 43d8 	orr.w	r3, r3, #27648	; 0x6c00
+ 80011a0:	6053      	str	r3, [r2, #4]
+	RCC->PLLCFGR &= ~RCC_PLLCFGR_PLLP; //PLLP 2
+ 80011a2:	4b1e      	ldr	r3, [pc, #120]	; (800121c <rcc_init+0x130>)
+ 80011a4:	685b      	ldr	r3, [r3, #4]
+ 80011a6:	4a1d      	ldr	r2, [pc, #116]	; (800121c <rcc_init+0x130>)
+ 80011a8:	f423 3340 	bic.w	r3, r3, #196608	; 0x30000
+ 80011ac:	6053      	str	r3, [r2, #4]
+
+	//RCC->PLLCFGR = 0x29406C19; //same value hardcoded
+
+	RCC->CR |= RCC_CR_PLLON; //Enable PLL
+ 80011ae:	4b1b      	ldr	r3, [pc, #108]	; (800121c <rcc_init+0x130>)
+ 80011b0:	681b      	ldr	r3, [r3, #0]
+ 80011b2:	4a1a      	ldr	r2, [pc, #104]	; (800121c <rcc_init+0x130>)
+ 80011b4:	f043 7380 	orr.w	r3, r3, #16777216	; 0x1000000
+ 80011b8:	6013      	str	r3, [r2, #0]
+	while (!(RCC->CR & RCC_CR_PLLRDY)); //wait while hardware signals PLL is OK
+ 80011ba:	bf00      	nop
+ 80011bc:	4b17      	ldr	r3, [pc, #92]	; (800121c <rcc_init+0x130>)
+ 80011be:	681b      	ldr	r3, [r3, #0]
+ 80011c0:	f003 7300 	and.w	r3, r3, #33554432	; 0x2000000
+ 80011c4:	2b00      	cmp	r3, #0
+ 80011c6:	d0f9      	beq.n	80011bc <rcc_init+0xd0>
+
+	FLASH->ACR |= 7U; //Set Flash wait states higher before pumping the clock up (8 clock cycles)
+ 80011c8:	4b17      	ldr	r3, [pc, #92]	; (8001228 <rcc_init+0x13c>)
+ 80011ca:	681b      	ldr	r3, [r3, #0]
+ 80011cc:	4a16      	ldr	r2, [pc, #88]	; (8001228 <rcc_init+0x13c>)
+ 80011ce:	f043 0307 	orr.w	r3, r3, #7
+ 80011d2:	6013      	str	r3, [r2, #0]
+	// otherwise the flash can't serve instructions quickly enough for that CPU clock
+
+	//configure AHB/APB clocks
+	RCC->CFGR &= ~RCC_CFGR_HPRE_DIV1; //AHB Prescaler 1
+ 80011d4:	4b11      	ldr	r3, [pc, #68]	; (800121c <rcc_init+0x130>)
+ 80011d6:	4a11      	ldr	r2, [pc, #68]	; (800121c <rcc_init+0x130>)
+ 80011d8:	689b      	ldr	r3, [r3, #8]
+ 80011da:	6093      	str	r3, [r2, #8]
+	RCC->CFGR |= RCC_CFGR_PPRE1_DIV4; //APB1 Prescaler 4
+ 80011dc:	4b0f      	ldr	r3, [pc, #60]	; (800121c <rcc_init+0x130>)
+ 80011de:	689b      	ldr	r3, [r3, #8]
+ 80011e0:	4a0e      	ldr	r2, [pc, #56]	; (800121c <rcc_init+0x130>)
+ 80011e2:	f443 53a0 	orr.w	r3, r3, #5120	; 0x1400
+ 80011e6:	6093      	str	r3, [r2, #8]
+	RCC->CFGR |= RCC_CFGR_PPRE2_DIV2; //APB2 Prescaler 2
+ 80011e8:	4b0c      	ldr	r3, [pc, #48]	; (800121c <rcc_init+0x130>)
+ 80011ea:	689b      	ldr	r3, [r3, #8]
+ 80011ec:	4a0b      	ldr	r2, [pc, #44]	; (800121c <rcc_init+0x130>)
+ 80011ee:	f443 4300 	orr.w	r3, r3, #32768	; 0x8000
+ 80011f2:	6093      	str	r3, [r2, #8]
+
+	//Set System Clock to PLL
+	RCC->CFGR |= RCC_CFGR_SW_PLL; // System Clock Mux: Select PLL as system clock
+ 80011f4:	4b09      	ldr	r3, [pc, #36]	; (800121c <rcc_init+0x130>)
+ 80011f6:	689b      	ldr	r3, [r3, #8]
+ 80011f8:	4a08      	ldr	r2, [pc, #32]	; (800121c <rcc_init+0x130>)
+ 80011fa:	f043 0302 	orr.w	r3, r3, #2
+ 80011fe:	6093      	str	r3, [r2, #8]
+	while ((RCC->CFGR & RCC_CFGR_SWS) != (RCC_CFGR_SWS_PLL)); //wait until PLL is established as system clock
+ 8001200:	bf00      	nop
+ 8001202:	4b06      	ldr	r3, [pc, #24]	; (800121c <rcc_init+0x130>)
+ 8001204:	689b      	ldr	r3, [r3, #8]
+ 8001206:	f003 030c 	and.w	r3, r3, #12
+ 800120a:	2b08      	cmp	r3, #8
+ 800120c:	d1f9      	bne.n	8001202 <rcc_init+0x116>
+}
+ 800120e:	bf00      	nop
+ 8001210:	bf00      	nop
+ 8001212:	370c      	adds	r7, #12
+ 8001214:	46bd      	mov	sp, r7
+ 8001216:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 800121a:	4770      	bx	lr
+ 800121c:	40023800 	.word	0x40023800
+ 8001220:	40007000 	.word	0x40007000
+ 8001224:	ffff803f 	.word	0xffff803f
+ 8001228:	40023c00 	.word	0x40023c00
+
+0800122c <systick_setup>:
+#include "systick.h"
+
+volatile uint32_t SYSTEM_MS; //46 days
+
+void systick_setup(uint32_t sys_freq) {
+ 800122c:	b480      	push	{r7}
+ 800122e:	b083      	sub	sp, #12
+ 8001230:	af00      	add	r7, sp, #0
+ 8001232:	6078      	str	r0, [r7, #4]
+	SysTick->LOAD = (SYSTEM_FREQUENCY / 1000U) - 1U; //1ms tick
+ 8001234:	4b0d      	ldr	r3, [pc, #52]	; (800126c <systick_setup+0x40>)
+ 8001236:	4a0e      	ldr	r2, [pc, #56]	; (8001270 <systick_setup+0x44>)
+ 8001238:	605a      	str	r2, [r3, #4]
+	SysTick->VAL = 0x00; //explicitly set start value (undefined on reset)
+ 800123a:	4b0c      	ldr	r3, [pc, #48]	; (800126c <systick_setup+0x40>)
+ 800123c:	2200      	movs	r2, #0
+ 800123e:	609a      	str	r2, [r3, #8]
+	SysTick->CTRL |= (1U << SysTick_CTRL_TICKINT_Pos) | (1U << SysTick_CTRL_CLKSOURCE_Pos); //enable systick interrupt, source processor clock
+ 8001240:	4b0a      	ldr	r3, [pc, #40]	; (800126c <systick_setup+0x40>)
+ 8001242:	681b      	ldr	r3, [r3, #0]
+ 8001244:	4a09      	ldr	r2, [pc, #36]	; (800126c <systick_setup+0x40>)
+ 8001246:	f043 0306 	orr.w	r3, r3, #6
+ 800124a:	6013      	str	r3, [r2, #0]
+	SCB->SHPR[8] = 0U; //set SysTick interrupt priority (default: 0, the highest)
+ 800124c:	4b09      	ldr	r3, [pc, #36]	; (8001274 <systick_setup+0x48>)
+ 800124e:	2200      	movs	r2, #0
+ 8001250:	f883 2020 	strb.w	r2, [r3, #32]
+	SysTick->CTRL |= (1U << SysTick_CTRL_ENABLE_Pos); //enable SysTick
+ 8001254:	4b05      	ldr	r3, [pc, #20]	; (800126c <systick_setup+0x40>)
+ 8001256:	681b      	ldr	r3, [r3, #0]
+ 8001258:	4a04      	ldr	r2, [pc, #16]	; (800126c <systick_setup+0x40>)
+ 800125a:	f043 0301 	orr.w	r3, r3, #1
+ 800125e:	6013      	str	r3, [r2, #0]
+}
+ 8001260:	bf00      	nop
+ 8001262:	370c      	adds	r7, #12
+ 8001264:	46bd      	mov	sp, r7
+ 8001266:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 800126a:	4770      	bx	lr
+ 800126c:	e000e010 	.word	0xe000e010
+ 8001270:	00034bbf 	.word	0x00034bbf
+ 8001274:	e000ed00 	.word	0xe000ed00
+
+08001278 <SysTick_Handler>:
+
+void SysTick_Handler(void) {
+ 8001278:	b480      	push	{r7}
+ 800127a:	af00      	add	r7, sp, #0
+	SYSTEM_MS++;
+ 800127c:	4b04      	ldr	r3, [pc, #16]	; (8001290 <SysTick_Handler+0x18>)
+ 800127e:	681b      	ldr	r3, [r3, #0]
+ 8001280:	3301      	adds	r3, #1
+ 8001282:	4a03      	ldr	r2, [pc, #12]	; (8001290 <SysTick_Handler+0x18>)
+ 8001284:	6013      	str	r3, [r2, #0]
+}
+ 8001286:	bf00      	nop
+ 8001288:	46bd      	mov	sp, r7
+ 800128a:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 800128e:	4770      	bx	lr
+ 8001290:	2000001c 	.word	0x2000001c
+
+08001294 <millis>:
+
+uint32_t millis(void){
+ 8001294:	b480      	push	{r7}
+ 8001296:	af00      	add	r7, sp, #0
+	return SYSTEM_MS;
+ 8001298:	4b03      	ldr	r3, [pc, #12]	; (80012a8 <millis+0x14>)
+ 800129a:	681b      	ldr	r3, [r3, #0]
+}
+ 800129c:	4618      	mov	r0, r3
+ 800129e:	46bd      	mov	sp, r7
+ 80012a0:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 80012a4:	4770      	bx	lr
+ 80012a6:	bf00      	nop
+ 80012a8:	2000001c 	.word	0x2000001c
+
+080012ac <system_msdelay>:
+
+void system_msdelay(uint32_t delay_ms){
+ 80012ac:	b580      	push	{r7, lr}
+ 80012ae:	b084      	sub	sp, #16
+ 80012b0:	af00      	add	r7, sp, #0
+ 80012b2:	6078      	str	r0, [r7, #4]
+	uint32_t end = millis() + delay_ms;  //will overflow eventually
+ 80012b4:	f7ff ffee 	bl	8001294 <millis>
+ 80012b8:	4602      	mov	r2, r0
+ 80012ba:	687b      	ldr	r3, [r7, #4]
+ 80012bc:	4413      	add	r3, r2
+ 80012be:	60fb      	str	r3, [r7, #12]
+	while(millis()!=end); //not < in case of overflow
+ 80012c0:	bf00      	nop
+ 80012c2:	f7ff ffe7 	bl	8001294 <millis>
+ 80012c6:	4602      	mov	r2, r0
+ 80012c8:	68fb      	ldr	r3, [r7, #12]
+ 80012ca:	4293      	cmp	r3, r2
+ 80012cc:	d1f9      	bne.n	80012c2 <system_msdelay+0x16>
+}
+ 80012ce:	bf00      	nop
+ 80012d0:	bf00      	nop
+ 80012d2:	3710      	adds	r7, #16
+ 80012d4:	46bd      	mov	sp, r7
+ 80012d6:	bd80      	pop	{r7, pc}
+
+080012d8 <usart_enable>:
+#include <usart.h>
+
+void usart_enable(USART_TypeDef *USART) {
+ 80012d8:	b480      	push	{r7}
+ 80012da:	b083      	sub	sp, #12
+ 80012dc:	af00      	add	r7, sp, #0
+ 80012de:	6078      	str	r0, [r7, #4]
+	USART->CR1 |= USART_CR1_UE; //USART1 Enable
+ 80012e0:	687b      	ldr	r3, [r7, #4]
+ 80012e2:	681b      	ldr	r3, [r3, #0]
+ 80012e4:	f043 0201 	orr.w	r2, r3, #1
+ 80012e8:	687b      	ldr	r3, [r7, #4]
+ 80012ea:	601a      	str	r2, [r3, #0]
+}
+ 80012ec:	bf00      	nop
+ 80012ee:	370c      	adds	r7, #12
+ 80012f0:	46bd      	mov	sp, r7
+ 80012f2:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 80012f6:	4770      	bx	lr
+
+080012f8 <usart_enable_tx>:
+void usart_disable(USART_TypeDef *USART) {
+	USART1->CR1 &= ~USART_CR1_UE; //USART1 Disable
+}
+void usart_enable_tx(USART_TypeDef *USART) {
+ 80012f8:	b480      	push	{r7}
+ 80012fa:	b083      	sub	sp, #12
+ 80012fc:	af00      	add	r7, sp, #0
+ 80012fe:	6078      	str	r0, [r7, #4]
+	USART1->CR1 |= USART_CR1_TE; // USART Transmitter enabled
+ 8001300:	4b05      	ldr	r3, [pc, #20]	; (8001318 <usart_enable_tx+0x20>)
+ 8001302:	681b      	ldr	r3, [r3, #0]
+ 8001304:	4a04      	ldr	r2, [pc, #16]	; (8001318 <usart_enable_tx+0x20>)
+ 8001306:	f043 0308 	orr.w	r3, r3, #8
+ 800130a:	6013      	str	r3, [r2, #0]
+}
+ 800130c:	bf00      	nop
+ 800130e:	370c      	adds	r7, #12
+ 8001310:	46bd      	mov	sp, r7
+ 8001312:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8001316:	4770      	bx	lr
+ 8001318:	40011000 	.word	0x40011000
+
+0800131c <usart_enable_rx>:
+void usart_disable_tx(USART_TypeDef *USART) {
+	USART1->CR1 &= ~USART_CR1_TE; //USART Transmitter disabled
+}
+void usart_enable_rx(USART_TypeDef *USART) {
+ 800131c:	b480      	push	{r7}
+ 800131e:	b083      	sub	sp, #12
+ 8001320:	af00      	add	r7, sp, #0
+ 8001322:	6078      	str	r0, [r7, #4]
+	USART1->CR1 |= USART_CR1_RE; //USART Receiver enabled
+ 8001324:	4b05      	ldr	r3, [pc, #20]	; (800133c <usart_enable_rx+0x20>)
+ 8001326:	681b      	ldr	r3, [r3, #0]
+ 8001328:	4a04      	ldr	r2, [pc, #16]	; (800133c <usart_enable_rx+0x20>)
+ 800132a:	f043 0304 	orr.w	r3, r3, #4
+ 800132e:	6013      	str	r3, [r2, #0]
+}
+ 8001330:	bf00      	nop
+ 8001332:	370c      	adds	r7, #12
+ 8001334:	46bd      	mov	sp, r7
+ 8001336:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 800133a:	4770      	bx	lr
+ 800133c:	40011000 	.word	0x40011000
+
+08001340 <usart_dma_setup>:
+void usart_disable_rx(USART_TypeDef *USART) {
+	USART1->CR1 &= ~USART_CR1_RE; //USART Receiver disabled
+}
+
+void usart_dma_setup(USART_TypeDef *USART) {
+ 8001340:	b480      	push	{r7}
+ 8001342:	b083      	sub	sp, #12
+ 8001344:	af00      	add	r7, sp, #0
+ 8001346:	6078      	str	r0, [r7, #4]
+
+	//Set all configs to Reset Value
+
+	USART->CR1 = 0x00;
+ 8001348:	687b      	ldr	r3, [r7, #4]
+ 800134a:	2200      	movs	r2, #0
+ 800134c:	601a      	str	r2, [r3, #0]
+	USART->CR2 = 0x00;
+ 800134e:	687b      	ldr	r3, [r7, #4]
+ 8001350:	2200      	movs	r2, #0
+ 8001352:	605a      	str	r2, [r3, #4]
+	USART->CR3 = 0x00;
+ 8001354:	687b      	ldr	r3, [r7, #4]
+ 8001356:	2200      	movs	r2, #0
+ 8001358:	609a      	str	r2, [r3, #8]
+	USART->GTPR = 0x00;
+ 800135a:	687b      	ldr	r3, [r7, #4]
+ 800135c:	2200      	movs	r2, #0
+ 800135e:	611a      	str	r2, [r3, #16]
+
+	USART->CR3 |= USART_CR3_OVRDIS; //disable receiver overrun error
+ 8001360:	687b      	ldr	r3, [r7, #4]
+ 8001362:	689b      	ldr	r3, [r3, #8]
+ 8001364:	f443 5280 	orr.w	r2, r3, #4096	; 0x1000
+ 8001368:	687b      	ldr	r3, [r7, #4]
+ 800136a:	609a      	str	r2, [r3, #8]
+	USART->BRR = 0x57E4; //Set baudrate to 9600 (Fck = 216MHz)
+ 800136c:	687b      	ldr	r3, [r7, #4]
+ 800136e:	f245 72e4 	movw	r2, #22500	; 0x57e4
+ 8001372:	60da      	str	r2, [r3, #12]
+
+	USART->CR3 |= (USART_CR3_DMAT | USART_CR3_DMAR);  //Enable DMA-mode receiver/transmitter
+ 8001374:	687b      	ldr	r3, [r7, #4]
+ 8001376:	689b      	ldr	r3, [r3, #8]
+ 8001378:	f043 02c0 	orr.w	r2, r3, #192	; 0xc0
+ 800137c:	687b      	ldr	r3, [r7, #4]
+ 800137e:	609a      	str	r2, [r3, #8]
+
+
+
+	//------------------------- USART_TX DMA SETUP ----------------------
+
+	DMA2_Stream7->CR = 0x00; //reset control register to default value; disable ongoing streams
+ 8001380:	4b20      	ldr	r3, [pc, #128]	; (8001404 <usart_dma_setup+0xc4>)
+ 8001382:	2200      	movs	r2, #0
+ 8001384:	601a      	str	r2, [r3, #0]
+	DMA2_Stream7->FCR = 0x21; //reset FIFO control register
+ 8001386:	4b1f      	ldr	r3, [pc, #124]	; (8001404 <usart_dma_setup+0xc4>)
+ 8001388:	2221      	movs	r2, #33	; 0x21
+ 800138a:	615a      	str	r2, [r3, #20]
+
+	while (DMA2_Stream7->CR & DMA_SxCR_EN); //wait until stream is actually disabled
+ 800138c:	bf00      	nop
+ 800138e:	4b1d      	ldr	r3, [pc, #116]	; (8001404 <usart_dma_setup+0xc4>)
+ 8001390:	681b      	ldr	r3, [r3, #0]
+ 8001392:	f003 0301 	and.w	r3, r3, #1
+ 8001396:	2b00      	cmp	r3, #0
+ 8001398:	d1f9      	bne.n	800138e <usart_dma_setup+0x4e>
+
+	DMA2->HIFCR |= (0x1 << 22U) | (0xF << 24); //Clear DMA2_Stream7 flags
+ 800139a:	4b1b      	ldr	r3, [pc, #108]	; (8001408 <usart_dma_setup+0xc8>)
+ 800139c:	68db      	ldr	r3, [r3, #12]
+ 800139e:	4a1a      	ldr	r2, [pc, #104]	; (8001408 <usart_dma_setup+0xc8>)
+ 80013a0:	f043 6374 	orr.w	r3, r3, #255852544	; 0xf400000
+ 80013a4:	60d3      	str	r3, [r2, #12]
+
+	DMA2_Stream7->PAR = (uint32_t) (&(USART->TDR)); //set peripheral port address
+ 80013a6:	687b      	ldr	r3, [r7, #4]
+ 80013a8:	f103 0228 	add.w	r2, r3, #40	; 0x28
+ 80013ac:	4b15      	ldr	r3, [pc, #84]	; (8001404 <usart_dma_setup+0xc4>)
+ 80013ae:	609a      	str	r2, [r3, #8]
+	 *  Direction memory-to-peripheral
+	 *  DMA flow control (default)
+	 *  Transfer complete interrupt
+	 *
+	 * */
+	DMA2_Stream7->CR |= 4U << 25U | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_TCIE;
+ 80013b0:	4b14      	ldr	r3, [pc, #80]	; (8001404 <usart_dma_setup+0xc4>)
+ 80013b2:	681a      	ldr	r2, [r3, #0]
+ 80013b4:	4913      	ldr	r1, [pc, #76]	; (8001404 <usart_dma_setup+0xc4>)
+ 80013b6:	4b15      	ldr	r3, [pc, #84]	; (800140c <usart_dma_setup+0xcc>)
+ 80013b8:	4313      	orrs	r3, r2
+ 80013ba:	600b      	str	r3, [r1, #0]
+
+
+
+	//----------------------- USART RX DMA SETUP -------------------------------
+
+	DMA2_Stream2->CR = 0x00; //reset DMA stream 2 control register
+ 80013bc:	4b14      	ldr	r3, [pc, #80]	; (8001410 <usart_dma_setup+0xd0>)
+ 80013be:	2200      	movs	r2, #0
+ 80013c0:	601a      	str	r2, [r3, #0]
+	DMA2_Stream2->FCR = 0x21; //reset FIFO control register
+ 80013c2:	4b13      	ldr	r3, [pc, #76]	; (8001410 <usart_dma_setup+0xd0>)
+ 80013c4:	2221      	movs	r2, #33	; 0x21
+ 80013c6:	615a      	str	r2, [r3, #20]
+
+	while (DMA2_Stream2->CR & DMA_SxCR_EN); //wait until stream is actually disabled
+ 80013c8:	bf00      	nop
+ 80013ca:	4b11      	ldr	r3, [pc, #68]	; (8001410 <usart_dma_setup+0xd0>)
+ 80013cc:	681b      	ldr	r3, [r3, #0]
+ 80013ce:	f003 0301 	and.w	r3, r3, #1
+ 80013d2:	2b00      	cmp	r3, #0
+ 80013d4:	d1f9      	bne.n	80013ca <usart_dma_setup+0x8a>
+
+	DMA2->LIFCR |= (1U << 16U) | (0x0F << 18U);  //clear DMA2_Stream2 flags
+ 80013d6:	4b0c      	ldr	r3, [pc, #48]	; (8001408 <usart_dma_setup+0xc8>)
+ 80013d8:	689b      	ldr	r3, [r3, #8]
+ 80013da:	4a0b      	ldr	r2, [pc, #44]	; (8001408 <usart_dma_setup+0xc8>)
+ 80013dc:	f443 1374 	orr.w	r3, r3, #3997696	; 0x3d0000
+ 80013e0:	6093      	str	r3, [r2, #8]
+
+	DMA2_Stream2->PAR = (uint32_t) (&(USART->RDR)); //set peripheral port address
+ 80013e2:	687b      	ldr	r3, [r7, #4]
+ 80013e4:	f103 0224 	add.w	r2, r3, #36	; 0x24
+ 80013e8:	4b09      	ldr	r3, [pc, #36]	; (8001410 <usart_dma_setup+0xd0>)
+ 80013ea:	609a      	str	r2, [r3, #8]
+	 *  Direction peripheral-to-memory (default)
+	 *  DMA flow control (default)
+	 *  Transfer complete interrupt
+	 * */
+
+	DMA2_Stream2->CR |= 4U << 25U | DMA_SxCR_MINC | DMA_SxCR_TCIE;
+ 80013ec:	4b08      	ldr	r3, [pc, #32]	; (8001410 <usart_dma_setup+0xd0>)
+ 80013ee:	681a      	ldr	r2, [r3, #0]
+ 80013f0:	4907      	ldr	r1, [pc, #28]	; (8001410 <usart_dma_setup+0xd0>)
+ 80013f2:	4b08      	ldr	r3, [pc, #32]	; (8001414 <usart_dma_setup+0xd4>)
+ 80013f4:	4313      	orrs	r3, r2
+ 80013f6:	600b      	str	r3, [r1, #0]
+
+}
+ 80013f8:	bf00      	nop
+ 80013fa:	370c      	adds	r7, #12
+ 80013fc:	46bd      	mov	sp, r7
+ 80013fe:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8001402:	4770      	bx	lr
+ 8001404:	400264b8 	.word	0x400264b8
+ 8001408:	40026400 	.word	0x40026400
+ 800140c:	08000450 	.word	0x08000450
+ 8001410:	40026440 	.word	0x40026440
+ 8001414:	08000410 	.word	0x08000410
+
+08001418 <usart_dma_sendArray>:
+
+void usart_dma_sendArray(USART_TypeDef *USART, uint8_t data[], uint32_t length) {
+ 8001418:	b480      	push	{r7}
+ 800141a:	b085      	sub	sp, #20
+ 800141c:	af00      	add	r7, sp, #0
+ 800141e:	60f8      	str	r0, [r7, #12]
+ 8001420:	60b9      	str	r1, [r7, #8]
+ 8001422:	607a      	str	r2, [r7, #4]
+	if (length < 1U)
+ 8001424:	687b      	ldr	r3, [r7, #4]
+ 8001426:	2b00      	cmp	r3, #0
+ 8001428:	d012      	beq.n	8001450 <usart_dma_sendArray+0x38>
+		return; //idiot-proofing
+
+	DMA2_Stream7->M0AR = (uint32_t) data; //set memory port address
+ 800142a:	4a0c      	ldr	r2, [pc, #48]	; (800145c <usart_dma_sendArray+0x44>)
+ 800142c:	68bb      	ldr	r3, [r7, #8]
+ 800142e:	60d3      	str	r3, [r2, #12]
+	DMA2_Stream7->NDTR = length; //set number of data items to transfer
+ 8001430:	4a0a      	ldr	r2, [pc, #40]	; (800145c <usart_dma_sendArray+0x44>)
+ 8001432:	687b      	ldr	r3, [r7, #4]
+ 8001434:	6053      	str	r3, [r2, #4]
+
+	USART->ICR |= USART_ICR_TCCF; //clear transmission complete flag of USART
+ 8001436:	68fb      	ldr	r3, [r7, #12]
+ 8001438:	6a1b      	ldr	r3, [r3, #32]
+ 800143a:	f043 0240 	orr.w	r2, r3, #64	; 0x40
+ 800143e:	68fb      	ldr	r3, [r7, #12]
+ 8001440:	621a      	str	r2, [r3, #32]
+
+	DMA2_Stream7->CR |= DMA_SxCR_EN; //activate stream
+ 8001442:	4b06      	ldr	r3, [pc, #24]	; (800145c <usart_dma_sendArray+0x44>)
+ 8001444:	681b      	ldr	r3, [r3, #0]
+ 8001446:	4a05      	ldr	r2, [pc, #20]	; (800145c <usart_dma_sendArray+0x44>)
+ 8001448:	f043 0301 	orr.w	r3, r3, #1
+ 800144c:	6013      	str	r3, [r2, #0]
+ 800144e:	e000      	b.n	8001452 <usart_dma_sendArray+0x3a>
+		return; //idiot-proofing
+ 8001450:	bf00      	nop
+
+}
+ 8001452:	3714      	adds	r7, #20
+ 8001454:	46bd      	mov	sp, r7
+ 8001456:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 800145a:	4770      	bx	lr
+ 800145c:	400264b8 	.word	0x400264b8
+
+08001460 <Reset_Handler>:
+
+  .section .text.Reset_Handler
+  .weak Reset_Handler
+  .type Reset_Handler, %function
+Reset_Handler:
+  ldr   r0, =_estack
+ 8001460:	480d      	ldr	r0, [pc, #52]	; (8001498 <LoopForever+0x2>)
+  mov   sp, r0          /* set stack pointer */
+ 8001462:	4685      	mov	sp, r0
+/* Call the clock system intitialization function.*/
+  bl  SystemInit
+ 8001464:	f3af 8000 	nop.w
+
+/* Copy the data segment initializers from flash to SRAM */
+  ldr r0, =_sdata
+ 8001468:	480c      	ldr	r0, [pc, #48]	; (800149c <LoopForever+0x6>)
+  ldr r1, =_edata
+ 800146a:	490d      	ldr	r1, [pc, #52]	; (80014a0 <LoopForever+0xa>)
+  ldr r2, =_sidata
+ 800146c:	4a0d      	ldr	r2, [pc, #52]	; (80014a4 <LoopForever+0xe>)
+  movs r3, #0
+ 800146e:	2300      	movs	r3, #0
+  b LoopCopyDataInit
+ 8001470:	e002      	b.n	8001478 <LoopCopyDataInit>
+
+08001472 <CopyDataInit>:
+
+CopyDataInit:
+  ldr r4, [r2, r3]
+ 8001472:	58d4      	ldr	r4, [r2, r3]
+  str r4, [r0, r3]
+ 8001474:	50c4      	str	r4, [r0, r3]
+  adds r3, r3, #4
+ 8001476:	3304      	adds	r3, #4
+
+08001478 <LoopCopyDataInit>:
+
+LoopCopyDataInit:
+  adds r4, r0, r3
+ 8001478:	18c4      	adds	r4, r0, r3
+  cmp r4, r1
+ 800147a:	428c      	cmp	r4, r1
+  bcc CopyDataInit
+ 800147c:	d3f9      	bcc.n	8001472 <CopyDataInit>
+
+/* Zero fill the bss segment. */
+  ldr r2, =_sbss
+ 800147e:	4a0a      	ldr	r2, [pc, #40]	; (80014a8 <LoopForever+0x12>)
+  ldr r4, =_ebss
+ 8001480:	4c0a      	ldr	r4, [pc, #40]	; (80014ac <LoopForever+0x16>)
+  movs r3, #0
+ 8001482:	2300      	movs	r3, #0
+  b LoopFillZerobss
+ 8001484:	e001      	b.n	800148a <LoopFillZerobss>
+
+08001486 <FillZerobss>:
+
+FillZerobss:
+  str  r3, [r2]
+ 8001486:	6013      	str	r3, [r2, #0]
+  adds r2, r2, #4
+ 8001488:	3204      	adds	r2, #4
+
+0800148a <LoopFillZerobss>:
+
+LoopFillZerobss:
+  cmp r2, r4
+ 800148a:	42a2      	cmp	r2, r4
+  bcc FillZerobss
+ 800148c:	d3fb      	bcc.n	8001486 <FillZerobss>
+
+/* Call static constructors */
+  bl __libc_init_array
+ 800148e:	f000 f811 	bl	80014b4 <__libc_init_array>
+/* Call the application's entry point.*/
+  bl main
+ 8001492:	f7ff f86b 	bl	800056c <main>
+
+08001496 <LoopForever>:
+
+LoopForever:
+    b LoopForever
+ 8001496:	e7fe      	b.n	8001496 <LoopForever>
+  ldr   r0, =_estack
+ 8001498:	20050000 	.word	0x20050000
+  ldr r0, =_sdata
+ 800149c:	20000000 	.word	0x20000000
+  ldr r1, =_edata
+ 80014a0:	20000000 	.word	0x20000000
+  ldr r2, =_sidata
+ 80014a4:	080015e0 	.word	0x080015e0
+  ldr r2, =_sbss
+ 80014a8:	20000000 	.word	0x20000000
+  ldr r4, =_ebss
+ 80014ac:	20000020 	.word	0x20000020
+
+080014b0 <ADC_IRQHandler>:
+ * @retval : None
+*/
+  .section .text.Default_Handler,"ax",%progbits
+Default_Handler:
+Infinite_Loop:
+  b Infinite_Loop
+ 80014b0:	e7fe      	b.n	80014b0 <ADC_IRQHandler>
+	...
+
+080014b4 <__libc_init_array>:
+ 80014b4:	b570      	push	{r4, r5, r6, lr}
+ 80014b6:	4d0d      	ldr	r5, [pc, #52]	; (80014ec <__libc_init_array+0x38>)
+ 80014b8:	4c0d      	ldr	r4, [pc, #52]	; (80014f0 <__libc_init_array+0x3c>)
+ 80014ba:	1b64      	subs	r4, r4, r5
+ 80014bc:	10a4      	asrs	r4, r4, #2
+ 80014be:	2600      	movs	r6, #0
+ 80014c0:	42a6      	cmp	r6, r4
+ 80014c2:	d109      	bne.n	80014d8 <__libc_init_array+0x24>
+ 80014c4:	4d0b      	ldr	r5, [pc, #44]	; (80014f4 <__libc_init_array+0x40>)
+ 80014c6:	4c0c      	ldr	r4, [pc, #48]	; (80014f8 <__libc_init_array+0x44>)
+ 80014c8:	f000 f818 	bl	80014fc <_init>
+ 80014cc:	1b64      	subs	r4, r4, r5
+ 80014ce:	10a4      	asrs	r4, r4, #2
+ 80014d0:	2600      	movs	r6, #0
+ 80014d2:	42a6      	cmp	r6, r4
+ 80014d4:	d105      	bne.n	80014e2 <__libc_init_array+0x2e>
+ 80014d6:	bd70      	pop	{r4, r5, r6, pc}
+ 80014d8:	f855 3b04 	ldr.w	r3, [r5], #4
+ 80014dc:	4798      	blx	r3
+ 80014de:	3601      	adds	r6, #1
+ 80014e0:	e7ee      	b.n	80014c0 <__libc_init_array+0xc>
+ 80014e2:	f855 3b04 	ldr.w	r3, [r5], #4
+ 80014e6:	4798      	blx	r3
+ 80014e8:	3601      	adds	r6, #1
+ 80014ea:	e7f2      	b.n	80014d2 <__libc_init_array+0x1e>
+ 80014ec:	080015d8 	.word	0x080015d8
+ 80014f0:	080015d8 	.word	0x080015d8
+ 80014f4:	080015d8 	.word	0x080015d8
+ 80014f8:	080015dc 	.word	0x080015dc
+
+080014fc <_init>:
+ 80014fc:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 80014fe:	bf00      	nop
+ 8001500:	bcf8      	pop	{r3, r4, r5, r6, r7}
+ 8001502:	bc08      	pop	{r3}
+ 8001504:	469e      	mov	lr, r3
+ 8001506:	4770      	bx	lr
+
+08001508 <_fini>:
+ 8001508:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 800150a:	bf00      	nop
+ 800150c:	bcf8      	pop	{r3, r4, r5, r6, r7}
+ 800150e:	bc08      	pop	{r3}
+ 8001510:	469e      	mov	lr, r3
+ 8001512:	4770      	bx	lr

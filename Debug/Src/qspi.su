@@ -1,0 +1,7 @@
+qspi.c:12:6:QSPI_setupIndirect	8	static
+qspi.c:48:6:QSPI_readRegister	16	static
+qspi.c:87:6:QSPI_indirectWriteInstruction	16	static
+qspi.c:121:6:QSPI_indirectWriteRegister	16	static
+qspi.c:162:6:QSPI_readMemoryBytesQuad	24	static
+qspi.c:214:6:QSPI_eraseQuad	24	static
+qspi.c:252:6:QSPI_programMemoryBytesQuad	32	static

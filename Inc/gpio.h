@@ -3,6 +3,6 @@
 #include "stm32f746xx.h"
 
 void gpio_setup(void);
-void blink_ld1(void);
+void toggle_stm32f746disco_ld1(void);
 
 #endif /* GPIO_H_ */

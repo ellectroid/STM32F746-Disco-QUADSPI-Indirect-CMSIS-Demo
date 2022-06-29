@@ -1,76 +1,85 @@
 #include "main.h"
 
 void system_hw_setup(void);
+void printQspiFlashConfigs(void);
 
 int main(void) {
 
 	/*
-	 * 	I2C and UART DMA basic CMSIS demo program for STM32F746-DISCO
+	 * This program is a QUADSPI Indirect Mode Demo, CMSIS register definitions only
+	 * Hardware: STM32F746G-Discovery
+	 * MCU: STM32F746
+	 * QUADSPI NOR Flash IC: 128Mbit MT25QL128ABA1EW9
+	 * Software extras: DMA UART to ST-Link
 	 *
-	 * 	Hardware: STM32F746-DISCO with USART1 connected to ST-Link and I2C3 connected to FT5336 Capacitive Touch Panel (CTP)
 	 *
-	 * 	Peripherals used: USART1, I2C3, DMA1 (for I2C3), DMA2 (for USART1), TIM6 (Scanning CTP @ 60Hz), TIM7 (Scheduling CTP read command), SysTick, NVIC
-	 *
-	 * 	Operation:
-	 *
-	 * 	Set System Clock to 216MHz (max)
-	 *
-	 * 	USART1 DMA Test
-	 * 	USART1 prints multiple messages via DMA, waits to receive 8 symbols, send them back
-	 *
-	 * 	I2C3 DMA Test
-	 * 	I2C3 initializes FT5336
-	 * 	TIM6 @ 60Hz and TIM7 Trigger Number of Touches Read. If number of touches detected is greater than 0, that number is sent via USART1 (DMA)
-	 * 	Lasts indefinitely
-	 *
+	 * Actions performed: MCU QUADSPI peripheral setup
+	 * QUADSPI Flash setup
+	 * Erase the first 4kb subsector
+	 * Print the first 8 bytes via UART
+	 * Write the first 8 bytes to Flash
+	 * Print the first 8 bytes via UART
+	 * Victoriously blink an LED
 	 * */
 
-
-
-
 	system_hw_setup(); //initialize hardware
-
-	/* --- UART DMA Test: Sending multiple lines, receiving line and sending it back --- */
-
-	 uint8_t GreetingsLine1[] = "Testing DMA I2C & DMA UART on STM32F746-Disco!\r\n";
-	 uint8_t GreetingsLine2[] = "USART1 DMA test. Enter 8 Symbols to be sent back to you (USART 1 connected to ST-Link): \r\n";
-	 uint8_t NewLine[] = "\r\n";
-	 uint8_t GreetingsLine3[] = "I2C test. The number of touches on FT5336 Capacitive Touch Panel on I2C3\r\nSampling @ 60Hz using timer; report via UART only if number of touches > 0; max = 5): \r\n";
-	 uint8_t uart_dma_receiveBuffer[8];
+	unsigned char programStart[] = "\r\nProgram start\r\n";
+	usart_dma_sendArray(USART1, (uint8_t *) programStart, sizeof(programStart));
+	system_msdelay(100);
 
 
-	 usart_dma_sendArray(USART1, GreetingsLine1, sizeof(GreetingsLine1) - 1); //without end of line char
-	 while (DMA2_Stream7->NDTR > 0x00); // wait for the first line to finish sending stuff over DMA (number of bytes to transfer reaches 0)
+	/* Print QSPI Flash configuration registers via UART */
+	printQspiFlashConfigs();
 
-	 system_msdelay(2000); //wait 2s just because I want to show off systick
+	/* ---------- QUADSPI ERASE TEST ---------- */
 
-	 usart_dma_sendArray(USART1, GreetingsLine2, sizeof(GreetingsLine2) - 1); //without end of line char
-	 usart_dma_receiveArray(USART1, uart_dma_receiveBuffer, 8); //wait for new input
-	 while (DMA2_Stream2->NDTR > 0x00 || DMA2_Stream7->NDTR > 0x00); //wait while everything to be sent is sent and everything to be received is received
+	/* Erase the first 4kb subsector */
+	QSPI_eraseQuad(MT25QL128ABA1EW9_COMMAND_4KB_SUBSECTOR_ERASE, 0x000000);
 
-	 usart_dma_sendArray(USART1, uart_dma_receiveBuffer, sizeof(uart_dma_receiveBuffer)); //send what we received back
-	 while (DMA2_Stream7->NDTR > 0x00); // wait for the first line to finish sending stuff over DMA (number of bytes to transfer reaches 0)
+	/* Read first 8 bytes of memory */
+	uint8_t memoryContent[8];
+	QSPI_readMemoryBytesQuad(0x000000, 8U, memoryContent);
 
-	 usart_dma_sendArray(USART1, NewLine, sizeof(NewLine) - 1); //force new line
-	 while (DMA2_Stream7->NDTR > 0x00); // wait for data to be sent
+	/* Print these 8 bytes over UART */
+	uint8_t memoryContentChars[sizeof(memoryContent) * 2U]; //every byte is two hex chars
+	for (uint8_t i = 0; i < sizeof(memoryContent); i++) {
+		memoryContentChars[2 * i] = upperNibbleToAscii(memoryContent[i]);
+		memoryContentChars[2 * i + 1] = lowerNibbleToAscii(memoryContent[i]);
+	}
+	unsigned char memoryAddressString[] = "Memory at 0x000000: 0x";
+	usart_dma_sendArray(USART1, (uint8_t *)memoryAddressString, sizeof(memoryAddressString) - 1U);
+	system_msdelay(40U);
 
-	 usart_dma_sendArray(USART1, NewLine, sizeof(NewLine) - 1); //force new line
-	 while (DMA2_Stream7->NDTR > 0x00); // wait for data to be sent
+	usart_dma_sendArray(USART1, memoryContentChars, sizeof(memoryContentChars));
+	system_msdelay(100U);
 
-	 usart_dma_sendArray(USART1, GreetingsLine3, sizeof(GreetingsLine3) - 1); //force new line
-	 while (DMA2_Stream7->NDTR > 0x00); // wait for data to be sent
+	/* ---------- QUADSPI PROGRAM TEST ---------- */
 
+	unsigned char newLine[] = "\r\nWriting to Flash via QUADSPI\r\n";
+	usart_dma_sendArray(USART1, (uint8_t *) newLine, sizeof(newLine) - 1U);
+	system_msdelay(100U);
 
+	/* Write to the first 8 bytes*/
+	uint8_t dataToWrite[] = { 0xFA, 0xCE, 0x8D, 0x00, 0xFA, 0xCA, 0xDE, 0x07 };
+	QSPI_programMemoryBytesQuad(0x000000, sizeof(dataToWrite), dataToWrite);
 
-	/* ---------- END OF UART DMA TEST ------------ */
+	QSPI_readMemoryBytesQuad(0x000000, 8U, memoryContent);
 
-	/* --- I2C3 DMA Test: report number of touches via UART --- */
+	for (uint8_t i = 0; i < sizeof(memoryContent); i++) {
+		memoryContentChars[2 * i] = upperNibbleToAscii(memoryContent[i]);
+		memoryContentChars[2 * i + 1] = lowerNibbleToAscii(memoryContent[i]);
+	}
+	usart_dma_sendArray(USART1, (uint8_t *)memoryAddressString, sizeof(memoryAddressString) - 1U);
+	system_msdelay(40U);
 
-	i2c_dma_sendArray(I2C3, interruptPollingMode, sizeof(interruptPollingMode)); //write interrupt register: polling mode
+	usart_dma_sendArray(USART1, memoryContentChars, sizeof(memoryContentChars));
+	system_msdelay(100U);
 
-	basic_timer_start(TIM6); //start requesting data from touch panel @ 60Hz
+	/* ---------- END OF QUADSPI TEST ---------- */
 
 	while (1) {
+		toggle_stm32f746disco_ld1();
+		system_msdelay(200U);
 	}
 }
 
@@ -84,8 +93,86 @@ void system_hw_setup(void) {
 	usart_enable(USART1); //enable uart1
 	usart_enable_tx(USART1); //enable tx line (wrapper)
 	usart_enable_rx(USART1); //enable rx line (wrapper)
-	i2c_dma_setup(I2C3); //set control registers and settings for I2C3 and its DMA connected to FT5336 capacitive touch panel
-	basic_timer_setup(TIM6, 54000U, 2000U / 60U + 1U, 0); //TIM6 60Hz Update Event (Touch) to request data from touch panel
-	basic_timer_setup(TIM7, 54U, 420U, 1U); //TIM7 210us one pulse mode (schedule I2C read 210us after I2C write)
+	QSPI_setupIndirect(); //setup qspi in indirect mode
 	nvic_setup(); //set interrupts and their priorities
+
+}
+
+void printQspiFlashConfigs(void) {
+	/*
+	 * Read volatile configuration register
+	 * Send it over UART
+	 *
+	 * */
+	uint8_t registerContent;
+	QSPI_readRegister(MT25QL128ABA1EW9_COMMAND_READ_VOLATILE_CONFIGURATION_REGISTER, QIO_QUAD, &registerContent);
+	char configurationRegisterString[] = "Configuration register: ";
+	uint8_t registerValue[6];
+	registerValue[0] = (uint8_t) '0';
+	registerValue[1] = (uint8_t) 'x';
+	registerValue[2] = (uint8_t) upperNibbleToAscii(registerContent);
+	registerValue[3] = (uint8_t) lowerNibbleToAscii(registerContent);
+	registerValue[4] = '\r';
+	registerValue[5] = '\n';
+	usart_dma_sendArray(USART1, (uint8_t*) configurationRegisterString, sizeof(configurationRegisterString));
+	system_msdelay(100);
+	usart_dma_sendArray(USART1, (uint8_t*) registerValue, sizeof(registerValue));
+	system_msdelay(100);
+
+	/*
+	 * Read enhanced volatile configuration register
+	 * Send it over UART
+	 *
+	 * */
+
+	QSPI_readRegister(MT25QL128ABA1EW9_COMMAND_READ_ENHANCED_VOLATILE_CONFIGURATION_REGISTER, QIO_QUAD, &registerContent);
+	char enhancedConfigurationRegisterString[] = "Enhanced configuration register: ";
+	registerValue[0] = (uint8_t) '0';
+	registerValue[1] = (uint8_t) 'x';
+	registerValue[2] = (uint8_t) upperNibbleToAscii(registerContent);
+	registerValue[3] = (uint8_t) lowerNibbleToAscii(registerContent);
+	registerValue[4] = '\r';
+	registerValue[5] = '\n';
+	usart_dma_sendArray(USART1, (uint8_t*) enhancedConfigurationRegisterString, sizeof(enhancedConfigurationRegisterString));
+	system_msdelay(100);
+	usart_dma_sendArray(USART1, (uint8_t*) registerValue, sizeof(registerValue));
+	system_msdelay(100);
+
+	/*
+	 * Read status register
+	 * Send it over UART
+	 *
+	 * */
+
+	QSPI_readRegister(MT25QL128ABA1EW9_COMMAND_READ_STATUS_REGISTER, QIO_QUAD, &registerContent);
+	char statusRegisterString[] = "Status register: ";
+	registerValue[0] = (uint8_t) '0';
+	registerValue[1] = (uint8_t) 'x';
+	registerValue[2] = (uint8_t) upperNibbleToAscii(registerContent);
+	registerValue[3] = (uint8_t) lowerNibbleToAscii(registerContent);
+	registerValue[4] = '\r';
+	registerValue[5] = '\n';
+	usart_dma_sendArray(USART1, (uint8_t*) statusRegisterString, sizeof(statusRegisterString));
+	system_msdelay(100);
+	usart_dma_sendArray(USART1, (uint8_t*) registerValue, sizeof(registerValue));
+	system_msdelay(100);
+
+	/*
+	 * Read flag status register
+	 * Send it over UART
+	 *
+	 * */
+
+	QSPI_readRegister(MT25QL128ABA1EW9_COMMAND_READ_FLAG_STATUS_REGISTER, QIO_QUAD, &registerContent);
+	char flagStatusRegisterString[] = "Flag status register: ";
+	registerValue[0] = (uint8_t) '0';
+	registerValue[1] = (uint8_t) 'x';
+	registerValue[2] = (uint8_t) upperNibbleToAscii(registerContent);
+	registerValue[3] = (uint8_t) lowerNibbleToAscii(registerContent);
+	registerValue[4] = '\r';
+	registerValue[5] = '\n';
+	usart_dma_sendArray(USART1, (uint8_t*) flagStatusRegisterString, sizeof(flagStatusRegisterString));
+	system_msdelay(100);
+	usart_dma_sendArray(USART1, (uint8_t*) registerValue, sizeof(registerValue));
+	system_msdelay(100);
 }

@@ -17,7 +17,10 @@ void rcc_gpio_porta(void);
 void rcc_gpio_portb(void);
 void rcc_gpio_porti(void);
 void rcc_gpio_porth(void);
+void rcc_gpio_portd(void);
+void rcc_gpio_porte(void);
 void rcc_init(void);
+void rcc_quadspi(void);
 
 void rcc_setup(void) {
 	rcc_init();
@@ -26,15 +29,31 @@ void rcc_setup(void) {
 	rcc_gpio_portb();
 	rcc_gpio_porti();
 	rcc_gpio_porth();
+	rcc_gpio_portd();
+	rcc_gpio_porte();
 	rcc_dma2();
 	rcc_i2c3();
 	rcc_dma1();
 	rcc_bsctmr6();
 	rcc_bsctmr7();
+	rcc_quadspi();
 
 }
+
+void rcc_quadspi(void){
+	RCC->AHB3ENR |= RCC_AHB3ENR_QSPIEN;
+}
+
 void rcc_i2c3(void){
 	RCC->APB1ENR |= RCC_APB1ENR_I2C3EN;
+}
+
+void rcc_gpio_porte(void){
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;
+}
+
+void rcc_gpio_portd(void){
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
 }
 
 void rcc_gpio_porth(void){

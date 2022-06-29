@@ -1,0 +1,2 @@
+el_utils.c:3:9:upperNibbleToAscii	16	static
+el_utils.c:11:9:lowerNibbleToAscii	16	static

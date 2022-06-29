@@ -63,6 +63,7 @@ void usart_dma_setup(USART_TypeDef *USART) {
 
 	DMA2_Stream2->CR = 0x00; //reset DMA stream 2 control register
 	DMA2_Stream2->FCR = 0x21; //reset FIFO control register
+
 	while (DMA2_Stream2->CR & DMA_SxCR_EN); //wait until stream is actually disabled
 
 	DMA2->LIFCR |= (1U << 16U) | (0x0F << 18U);  //clear DMA2_Stream2 flags

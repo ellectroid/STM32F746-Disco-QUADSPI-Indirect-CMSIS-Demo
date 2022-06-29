@@ -5,12 +5,12 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Src/bsctmr.c \
 ../Src/dma.c \
+../Src/el_utils.c \
 ../Src/gpio.c \
-../Src/i2c.c \
 ../Src/main.c \
 ../Src/nvic.c \
+../Src/qspi.c \
 ../Src/rcc.c \
 ../Src/syscalls.c \
 ../Src/sysmem.c \
@@ -18,12 +18,12 @@ C_SRCS += \
 ../Src/usart.c 
 
 OBJS += \
-./Src/bsctmr.o \
 ./Src/dma.o \
+./Src/el_utils.o \
 ./Src/gpio.o \
-./Src/i2c.o \
 ./Src/main.o \
 ./Src/nvic.o \
+./Src/qspi.o \
 ./Src/rcc.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o \
@@ -31,12 +31,12 @@ OBJS += \
 ./Src/usart.o 
 
 C_DEPS += \
-./Src/bsctmr.d \
 ./Src/dma.d \
+./Src/el_utils.d \
 ./Src/gpio.d \
-./Src/i2c.d \
 ./Src/main.d \
 ./Src/nvic.d \
+./Src/qspi.d \
 ./Src/rcc.d \
 ./Src/syscalls.d \
 ./Src/sysmem.d \
@@ -51,7 +51,7 @@ Src/%.o: ../Src/%.c Src/subdir.mk
 clean: clean-Src
 
 clean-Src:
-	-$(RM) ./Src/bsctmr.d ./Src/bsctmr.o ./Src/dma.d ./Src/dma.o ./Src/gpio.d ./Src/gpio.o ./Src/i2c.d ./Src/i2c.o ./Src/main.d ./Src/main.o ./Src/nvic.d ./Src/nvic.o ./Src/rcc.d ./Src/rcc.o ./Src/syscalls.d ./Src/syscalls.o ./Src/sysmem.d ./Src/sysmem.o ./Src/systick.d ./Src/systick.o ./Src/usart.d ./Src/usart.o
+	-$(RM) ./Src/dma.d ./Src/dma.o ./Src/el_utils.d ./Src/el_utils.o ./Src/gpio.d ./Src/gpio.o ./Src/main.d ./Src/main.o ./Src/nvic.d ./Src/nvic.o ./Src/qspi.d ./Src/qspi.o ./Src/rcc.d ./Src/rcc.o ./Src/syscalls.d ./Src/syscalls.o ./Src/sysmem.d ./Src/sysmem.o ./Src/systick.d ./Src/systick.o ./Src/usart.d ./Src/usart.o
 
 .PHONY: clean-Src
 
